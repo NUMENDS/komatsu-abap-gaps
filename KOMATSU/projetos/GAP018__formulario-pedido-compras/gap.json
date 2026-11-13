@@ -1,0 +1,198 @@
+{
+  "gap_id": "GAP018",
+  "slug": "formulario-pedido-compras",
+  "cliente": "KOMATSU",
+  "sistema_sap": "KOMATSU_DEV_100",
+  "prioridade": "media",
+  "dev_type": [],
+  "spec_path": "00_spec/[MM007] - EF - GAP018 FORMULÁRIO PEDIDO DE COMPRAS_V1.docx",
+  "current_stage": 1,
+  "status": "analise",
+  "assignee": {
+    "tipo": "agente",
+    "id": "builder"
+  },
+  "needs_human": false,
+  "needs_human_reason": null,
+  "test_data_policy": "strict",
+  "test_data_scenarios": [],
+  "bugs": [],
+  "stages": {
+    "0": {
+      "name": "Intake",
+      "status": "concluido",
+      "entry_passed": true,
+      "artifacts": [],
+      "gate": {
+        "tipo": "advisory",
+        "passed": true,
+        "checklist": [],
+        "evidence": [
+          "KOMATSU/projetos/GAP018__formulario-pedido-compras/00_spec/[MM007] - EF - GAP018 FORMULÁRIO PEDIDO DE COMPRAS_V1.docx",
+          "KOMATSU/_workbook/workbook-komatsu.md"
+        ],
+        "blockers": [],
+        "checked_at": "2026-11-13T22:04:12.171Z"
+      },
+      "rework_count": 0,
+      "started_at": "2026-11-13T17:33:17.266Z",
+      "completed_at": "2026-11-13T22:04:12.171Z"
+    },
+    "1": {
+      "name": "Análise & Plano",
+      "status": "em_andamento",
+      "entry_passed": true,
+      "artifacts": [],
+      "gate": {
+        "tipo": "hard",
+        "passed": false,
+        "checklist": [],
+        "evidence": [],
+        "blockers": [],
+        "checked_at": null
+      },
+      "rework_count": 0,
+      "started_at": "2026-11-13T22:04:12.171Z",
+      "completed_at": null
+    },
+    "2": {
+      "name": "Dev (TDD)",
+      "status": "pendente",
+      "entry_passed": false,
+      "artifacts": [],
+      "gate": {
+        "tipo": "hard",
+        "passed": false,
+        "checklist": [],
+        "evidence": [],
+        "blockers": [],
+        "checked_at": null
+      },
+      "rework_count": 0,
+      "started_at": null,
+      "completed_at": null
+    },
+    "3": {
+      "name": "Revisão",
+      "status": "pendente",
+      "entry_passed": false,
+      "artifacts": [],
+      "gate": {
+        "tipo": "hard",
+        "passed": false,
+        "checklist": [],
+        "evidence": [],
+        "blockers": [],
+        "checked_at": null
+      },
+      "rework_count": 0,
+      "started_at": null,
+      "completed_at": null
+    },
+    "4": {
+      "name": "ATC",
+      "status": "pendente",
+      "entry_passed": false,
+      "artifacts": [],
+      "gate": {
+        "tipo": "hard",
+        "passed": false,
+        "checklist": [],
+        "evidence": [],
+        "blockers": [],
+        "checked_at": null
+      },
+      "rework_count": 0,
+      "started_at": null,
+      "completed_at": null
+    },
+    "5": {
+      "name": "Testes + bugs",
+      "status": "pendente",
+      "entry_passed": false,
+      "artifacts": [],
+      "gate": {
+        "tipo": "hard",
+        "passed": false,
+        "checklist": [],
+        "evidence": [],
+        "blockers": [],
+        "checked_at": null
+      },
+      "rework_count": 0,
+      "started_at": null,
+      "completed_at": null
+    },
+    "6": {
+      "name": "Documentação",
+      "status": "pendente",
+      "entry_passed": false,
+      "artifacts": [],
+      "gate": {
+        "tipo": "advisory",
+        "passed": false,
+        "checklist": [],
+        "evidence": [],
+        "blockers": [],
+        "checked_at": null
+      },
+      "rework_count": 0,
+      "started_at": null,
+      "completed_at": null
+    },
+    "7": {
+      "name": "Encerramento",
+      "status": "pendente",
+      "entry_passed": false,
+      "artifacts": [],
+      "gate": {
+        "tipo": "hard",
+        "passed": false,
+        "checklist": [],
+        "evidence": [],
+        "blockers": [],
+        "checked_at": null
+      },
+      "rework_count": 0,
+      "started_at": null,
+      "completed_at": null
+    }
+  },
+  "metrics": {
+    "autonomy_pct": 0,
+    "rework_rounds": 0,
+    "bugs_by_severity": {
+      "T1": 0,
+      "T2": 0,
+      "T3": 0
+    },
+    "time_per_stage_min": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0
+    }
+  },
+  "log": [
+    {
+      "ts": "2026-11-13T17:33:17.266Z",
+      "stage": 0,
+      "event": "gap_created",
+      "by": "agente",
+      "detail": "GAP GAP018 inicializado"
+    },
+    {
+      "ts": "2026-11-13T22:04:12.171Z",
+      "stage": 0,
+      "event": "gate_passed",
+      "by": "agente",
+      "detail": "Gate advisory ok → avançando para Estágio 1"
+    }
+  ],
+  "created_at": "2026-11-13T17:33:17.266Z",
+  "updated_at": "2026-11-13T22:04:12.172Z"
+}

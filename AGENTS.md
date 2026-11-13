@@ -7,6 +7,7 @@ Por enquanto os desenvolvimentos estão apenas com objetos novos, mas em caso de
 Remediação = Cópia exata do legado, alterando somente o necessário para passar no ATC e adequar ao ambiente S/4.
 Simplificação = Alteração da lógica que já existia no legado.
 
+Quando a análise da spec no `factory_orchestrator` (`spec_analyzer`, Estágio 1), seguir a skill [`.cursor/skills/novo-objeto`](.cursor/skills/novo-objeto/SKILL.md) antes de gravar o plano e antes de criar ou alterar objeto.
 
 | Tipo | Descrição |
 |-----|-----|
@@ -79,3 +80,107 @@ SEMPRE utilizar o workbook `.cursor\rules\workbook-komatsu.mdc` para novos desen
 # Parametrização
 
 Utilizar `.cursor\rules\clean-core.mdc` como referencia para parametrização.
+
+# Regras de Sincronização com o Jira
+
+## 1. Aprovação de planos de desenvolvimento
+
+Sempre que o usuário aprovar explicitamente um plano
+de desenvolvimento, executar a skill `jira-story-sync`
+antes de iniciar a implementação.
+
+A skill deve:
+
+1. Identificar o desenvolvimento atual.
+2. Tentar identificar o GAP utilizando o contexto
+   da conversa, o plano aprovado e os arquivos
+   do projeto.
+3. Se não for possível identificar o GAP com segurança,
+   solicitar confirmação ao usuário.
+4. Nunca presumir ou selecionar arbitrariamente um GAP.
+5. Validar o GAP e o épico correspondente no Jira.
+6. Criar dinamicamente a pasta do GAP, caso necessário.
+7. Analisar o plano de desenvolvimento aprovado.
+8. Consultar todas as User Stories existentes no épico.
+9. Identificar histórias equivalentes, incompletas
+   ou ausentes.
+10. Atualizar ou criar User Stories conforme necessário.
+11. Salvar as referências no caminho:
+    `KOMATSU/projetos/[GAP]/jira-reference.json`
+12. Prosseguir com a implementação após a sincronização,
+    desde que não existam pendências que impeçam
+    o desenvolvimento.
+
+## 2. Execuções posteriores
+
+Quando a skill for invocada durante ou após
+o desenvolvimento:
+
+1. Identificar o desenvolvimento atual.
+2. Recuperar o GAP associado ao projeto.
+3. Validar a associação com o épico no Jira.
+4. Carregar as referências locais existentes.
+5. Consultar novamente as User Stories do épico.
+6. Comparar as histórias com o plano aprovado
+   e com a implementação atual.
+7. Atualizar histórias que estejam desatualizadas.
+8. Criar histórias ausentes, quando necessário.
+9. Preservar as histórias existentes que já estejam
+   corretas.
+10. Atualizar o arquivo de referências.
+11. Apresentar um resumo das alterações realizadas.
+
+## 3. Regras obrigatórias
+
+- Nunca presumir qual é o GAP do desenvolvimento.
+- Sempre solicitar confirmação quando houver ambiguidade.
+- Nunca criar User Stories duplicadas.
+- Nunca criar histórias para requisitos não aprovados.
+- Nunca excluir User Stories automaticamente.
+- Nunca alterar status ou responsáveis sem autorização.
+- Nunca sobrescrever alterações manuais conflitantes.
+- Sempre consultar o Jira antes de criar novas histórias.
+- Sempre preservar referências locais válidas.
+- Nunca informar sucesso sem verificar as operações.
+
+## 4. Prioridade de execução
+
+A sincronização com o Jira faz parte do fluxo
+de desenvolvimento.
+
+O fluxo esperado é:
+
+1. Elaborar o plano de desenvolvimento.
+2. Apresentar o plano ao usuário.
+3. Aguardar aprovação explícita.
+4. Executar a skill `jira-story-sync`.
+5. Resolver eventuais pendências de identificação
+   do GAP ou de sincronização.
+6. Iniciar a implementação do plano aprovado.
+7. Executar novamente a skill quando solicitado
+   durante ou após o desenvolvimento.
+
+A aprovação do plano não autoriza alterações
+de escopo que não estejam previstas nele.
+
+Não executar a sincronização para planos
+que ainda não tenham sido aprovados.
+
+## 5. Responsabilidade da skill
+
+O arquivo AGENTS.md define quando a sincronização
+deve ocorrer.
+
+A skill `jira-story-sync` é responsável pelos
+detalhes operacionais, incluindo:
+
+- Identificação e validação do GAP.
+- Consulta ao Jira.
+- Análise semântica das User Stories.
+- Prevenção de duplicidades.
+- Criação e atualização de histórias.
+- Persistência das referências locais.
+- Tratamento de conflitos e erros.
+
+Sempre seguir as instruções completas da skill
+durante sua execução.
