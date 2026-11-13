@@ -1,0 +1,35 @@
+{
+  "projeto": "Komatsu — Projeto Steel (código 3964)",
+  "id_gap": "GAP018",
+  "descricao_gap": "Formulário Adobe do pedido de compra",
+  "projeto_autor": "Igor Coutinho Checan",
+  "historico": [
+    {
+      "versao": "V0",
+      "autor": "Igor Coutinho Checan",
+      "data": "13/11/26",
+      "descricao": "Elaboração a partir da EF V1.3"
+    }
+  ],
+  "artefatos": {
+    "responsavel": "Igor Coutinho Checan",
+    "data_criacao": "13.11.2026",
+    "transacoes": "ME21N - Criar pedido de compra\nME22N - Modificar pedido de compra\nME9F - Mensagens do pedido\nF0842A - Emissão do pedido pelo comprador",
+    "objetos_tecnicos": "Formulário Adobe: ZMM_PEDIDO_COMPRA (cópia de MEDRUCK_PO, nome proposto)\nPrograma de impressão: SAPFM06P (não alterar)\nFormulário standard: MEDRUCK_PO (não alterar)\nMensagem: NEU, aplicação EF, meio impressão 1\nDeterminação: TNAPR e um registro em B026 por tipo de pedido, sem fornecedor",
+    "objetivo": "Emitir o PDF do pedido de compra nacional no layout Komatsu, em português e em uma via, pela mensagem de pedido novo no meio impressão. O formulário lê o pedido já gravado e não grava dado novo.\nFora: contrato de compra, pedido de importação (DEX, Web ou Excel), meios fax, EDI e ALE, envio de e-mail pelo sistema, GAP 020, GAP 022 e gravação do aceite do fornecedor.",
+    "tela_selecao": "N/A",
+    "itens": [
+      {
+        "objeto": "Formulário Adobe ZMM_PEDIDO_COMPRA",
+        "logica": "Na mensagem NEU, meio impressão 1, o programa SAPFM06P chama este formulário no lugar de MEDRUCK_PO. O PDF traz as seções 1 a 7 do layout. Campo sem valor sai em branco e não bloqueia a emissão. Data em DD/MM/AAAA. CNPJ em 99.999.999/9999-99.\nRN-02: a mensagem é proposta para NB e, depois de configurados, ZURG, ZREG, ZCON, ZOP1, ZOP2, ZOP3 e ZSER. Não é proposta para ZIMP, UB, UD, FO e os demais tipos. A proposta é um registro em B026 por tipo, para qualquer fornecedor. Se a mensagem for inserida à mão, o PDF sai mesmo assim.\nRN-03: cabeçalho, fornecedor e condições saem do pedido. Organização como código e descrição. Grupo de compras só com a descrição. Centro só com o nome. Condição de pagamento como código e texto de T052U no idioma P e limite de dias 00; sem o texto, só o código. Incoterm como código, TINCT-BEZEI no idioma P e complemento. E-mail do fornecedor é o padrão de ADR6, vigente na data do pedido.\nRN-04: item eliminado (EKPO-LOEKZ) não é impresso. Uma linha por item, na ordem do item. Preço com 4 casas e valor com 2. Data do item é a menor EKET-EINDT; a do cabeçalho é a menor entre os itens impressos.\nRN-05: as linhas ICMS (BX13), IPI (BX23), PIS (IPIS), COFINS (ICOF), FRETE (FRA1 e FRB1) e OUTROS CUSTOS são sempre impressas. Condição ausente sai 0,00. Total dos itens é a soma dos itens impressos. Valor total soma itens, impostos, frete e outros custos. PB00 e PBXX não entram em outros custos.\nRN-06: imprime os seis textos fixos do layout. Solicitado por é o nome do grupo de compras. Aprovado por e Recebido / Aceite saem com data em branco. O sistema não grava o aceite.\nRN-07: um PDF, em português, sem código de barras e sem número de via. A reemissão repete os dados atuais do pedido."
+      }
+    ],
+    "tvarv": "N/A — a EF não cita TVARV. A proposta da mensagem fica em B026.",
+    "brf": "N/A — fora de escopo.",
+    "objeto_autorizacao": "N/A — sem objeto novo. O comprador usa as autorizações de exibição e de mensagem já usadas em ME22N e ME9F."
+  },
+  "qualidade": {
+    "justificativas": "N/A"
+  },
+  "teste_unitario_texto": "Massa sintética, criada depois dos pré-requisitos. EKKO no mandante 100 não tem pedido. Organização 1410 existe e pode ser usada.\nAnexar o PDF de cada emissão e a tela da mensagem (ME22N ou ME9F) mostrando o meio usado. Os prints ainda não existem.\n1. CT-01 / RN-01 — Gravar pedido NB e processar a mensagem de pedido novo, meio impressão. Resultado: PDF com o título SAP S/4HANA PEDIDO DE COMPRA e o número do pedido.\n2. CT-02 / RN-01 — Processar a mensagem de fax do mesmo pedido. Resultado: não sai o PDF Komatsu. O fax permanece no formulário antigo.\n3. CT-03 / RN-02 — Emitir pedido NB. Resultado: PDF emitido.\n4. CT-04 / RN-02 — Gravar pedido UB. Resultado: a mensagem de pedido novo no meio impressão não é proposta.\n5. CT-05 / RN-03 — Emitir pedido com organização 1410, fornecedor com CNPJ e grupo de compras com e-mail. Resultado: cabeçalho mostra 1410 e a descrição cadastrada, CNPJ formatado e e-mail do grupo preenchido.\n6. CT-06 / RN-03 — Fornecedor sem e-mail e sem contato. Resultado: essas células em branco e o PDF gerado.\n7. CT-07 / RN-04 — Dois itens (10 em 10/09/2026 e 20 em 12/09/2026) e um item 30 eliminado. Resultado: duas linhas, cabeçalho em 10/09/2026, item 30 ausente e item 20 em 12/09/2026.\n8. CT-08 / RN-04 — Item sem texto longo e sem divisão de remessa. Resultado: especificação e data do item em branco; descrição breve impressa.\n9. CT-09 / RN-05 — Itens 1.075,00 + 540,00 + 175,00 + 575,00, BX13 425,70, BX23 0, IPIS 39,02, ICOF 179,74, sem frete. Resultado: total dos itens 2.365,00 e valor total do pedido 3.009,46.\n10. CT-10 / RN-05 — Sem IPI e sem frete. Resultado: linhas IPI e FRETE impressas com 0,00.\n11. CT-11 / RN-06 — Emitir qualquer pedido da RN-02. Resultado: os seis textos da RN-06 aparecem e as datas de aprovado por e de aceite ficam em branco.\n12. CT-12 / RN-06 — Grupo de compras com nome preenchido. Resultado: Solicitado por igual ao nome do grupo.\n13. CT-13 / RN-07 — Emitir, alterar a quantidade e reemitir. Resultado: o segundo PDF mostra a quantidade nova, continua uma via, em português e sem código de barras.\n14. CT-14 / RN-07 — Inspecionar o PDF do CT-01. Resultado: não há código de barras nem marcação de segunda via."
+}

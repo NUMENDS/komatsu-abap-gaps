@@ -11,15 +11,15 @@ function firstExisting(paths) {
   return paths.find((p) => p && fs.existsSync(p));
 }
 
-function leroyCandidates(skillRoot, extra) {
+function komatsuCandidates(skillRoot, extra) {
   return [
     path.join(skillRoot, "assets", "logo-komatsu.png"),
-    path.join(skillRoot, "assets", "logo-leroy-merlin.jpg"),
+    path.join(skillRoot, "assets", "logo-komatsu.jpg"),
     extra,
     path.join(skillRoot, "..", "especificacao-tecnica-gap", "assets", "logo-komatsu.png"),
-    path.join(skillRoot, "..", "especificacao-tecnica-gap", "assets", "logo-leroy-merlin.jpg"),
-    path.join(process.cwd(), "documentacao", "assets", "logo-leroy-merlin.jpg"),
-    path.join(process.cwd(), "Leroy-Merlin-Logo-1996.jpg"),
+    path.join(skillRoot, "..", "especificacao-tecnica-gap", "assets", "logo-komatsu.jpg"),
+    path.join(process.cwd(), "documentacao", "assets", "logo-komatsu.jpg"),
+    path.join(process.cwd(), "komatsu-Logo-1996.jpg"),
   ];
 }
 
@@ -27,15 +27,15 @@ export function loadLogos(skillRoot) {
   const jsonPath = path.join(skillRoot, "assets", "branding.json");
   if (fs.existsSync(jsonPath)) {
     const json = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
-    if (json.numenUri && json.leroyUri) {
+    if (json.numenUri && json.komatsuUri) {
       return {
         numenUri: json.numenUri,
-        leroyUri: json.leroyUri,
+        komatsuUri: json.komatsuUri,
         numenPath: firstExisting([
           path.join(skillRoot, "assets", "logo-numen.jpg"),
           json.numenPath,
         ]),
-        leroyPath: firstExisting(leroyCandidates(skillRoot, json.leroyPath)),
+        komatsuPath: firstExisting(komatsuCandidates(skillRoot, json.komatsuPath)),
       };
     }
   }
@@ -46,9 +46,9 @@ export function loadLogos(skillRoot) {
     path.join(process.cwd(), "documentacao", "assets", "logo-numen.jpg"),
     path.join(process.cwd(), "LOGO NUMEN.jpg"),
   ]);
-  const leroyPath = firstExisting(leroyCandidates(skillRoot));
+  const komatsuPath = firstExisting(komatsuCandidates(skillRoot));
 
-  if (!numenPath || !leroyPath) {
+  if (!numenPath || !komatsuPath) {
     throw new Error(
       "Logos Numen/Komatsu não encontradas. Inclua assets/logo-numen.jpg, assets/logo-komatsu.png e assets/branding.json na skill."
     );
@@ -56,9 +56,9 @@ export function loadLogos(skillRoot) {
 
   return {
     numenPath,
-    leroyPath,
+    komatsuPath,
     numenUri: uriFrom(numenPath),
-    leroyUri: uriFrom(leroyPath),
+    komatsuUri: uriFrom(komatsuPath),
   };
 }
 
@@ -68,8 +68,8 @@ export function injectLogos(html, logos) {
     `<img class="logo-numen" src="${logos.numenUri}" alt="Numen" />`
   );
   out = out.replace(
-    /<img class="logo-leroy"[^>]*>/g,
-    `<img class="logo-leroy" src="${logos.leroyUri}" alt="Leroy Merlin" />`
+    /<img class="logo-komatsu"[^>]*>/g,
+    `<img class="logo-komatsu" src="${logos.komatsuUri}" alt="Komatsu" />`
   );
   return out;
 }
@@ -82,21 +82,21 @@ function writeUri(dest, uri) {
 export function copyLogosTo(outDir, logos) {
   fs.mkdirSync(outDir, { recursive: true });
   const numenDest = path.join(outDir, "logo-numen.jpg");
-  const leroyName =
-    (logos.leroyPath || "").toLowerCase().endsWith(".png") ||
-    (logos.leroyUri || "").startsWith("data:image/png")
+  const komatsuName =
+    (logos.komatsuPath || "").toLowerCase().endsWith(".png") ||
+    (logos.komatsuUri || "").startsWith("data:image/png")
       ? "logo-komatsu.png"
-      : "logo-leroy-merlin.jpg";
-  const leroyDest = path.join(outDir, leroyName);
+      : "logo-komatsu.jpg";
+  const komatsuDest = path.join(outDir, komatsuName);
   if (logos.numenPath && fs.existsSync(logos.numenPath)) {
     fs.copyFileSync(logos.numenPath, numenDest);
   } else {
     writeUri(numenDest, logos.numenUri);
   }
-  if (logos.leroyPath && fs.existsSync(logos.leroyPath)) {
-    fs.copyFileSync(logos.leroyPath, leroyDest);
+  if (logos.komatsuPath && fs.existsSync(logos.komatsuPath)) {
+    fs.copyFileSync(logos.komatsuPath, komatsuDest);
   } else {
-    writeUri(leroyDest, logos.leroyUri);
+    writeUri(komatsuDest, logos.komatsuUri);
   }
 }
 

@@ -1,7 +1,7 @@
 ---
 name: especificacao-tecnica-gap
 description: >-
-  Gera a Especificação Técnica (ET) do GAP no layout PDF Numen/Leroy Merlin
+  Gera a Especificação Técnica (ET) do GAP no layout PDF Numen/Komatsu
   (características, objetivo, solução com trechos de código comprovando a spec).
   Use no mesmo chat da factory ABAP (factory_orchestrator, estágio Doc, pasta
   06_doc) depois de criar/alterar objetos via MCP user-abap-mcp-local, ou quando
@@ -44,7 +44,7 @@ Sem Chrome/Edge o script grava o HTML e falha — não inventar PDF.
 - Código: recorte que prova o RF (`METHOD`…`ENDMETHOD`, action/validation, CDS relevante). Não colar a classe inteira.
 - HTML: escapar no `et-data.json` em texto puro; o script faz escape.
 - Campos desconhecidos: perguntar ou usar o valor do `gap.json`. Não inventar request, módulo ou nome de desenvolvedor.
-- `projeto` padrão: `Leroy Merlin`. `status` padrão após testes da factory: `Em revisão`.
+- `projeto` padrão: `Komatsu`. `status` padrão após testes da factory: `Em revisão`.
 
 ## et-data.json
 
@@ -54,7 +54,7 @@ Ver [et-data.example.json](et-data.example.json). Obrigatórios: `gap_id`, `gap_
 
 ## Layout
 
-- Sempre rodar `scripts/render.mjs`. O script embute as logos (data URI) e copia `logo-numen.jpg` / `logo-leroy-merlin.jpg` para a pasta de saída. Sem isso as imagens somem no HTML do GAP.
+- Sempre rodar `scripts/render.mjs`. O script embute as logos (data URI) e copia `logo-numen.jpg` / `logo-komatsu.jpg` para a pasta de saída. Sem isso as imagens somem no HTML do GAP.
 - Não apontar `src` para `assets/` relativo ao GAP. Logos: `assets/branding.json` + `assets/logo-*.jpg` da skill.
 
 ## MCP

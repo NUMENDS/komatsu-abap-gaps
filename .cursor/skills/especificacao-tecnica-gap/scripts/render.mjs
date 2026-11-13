@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Preenche template.html e gera HTML + PDF no layout da ET Leroy Merlin × Numen.
+ * Preenche template.html e gera HTML + PDF no layout da ET Komatsu × Numen.
  *
  * Uso:
  *   node scripts/render.mjs --data path/to/et-data.json --out path/to/06_doc
@@ -72,7 +72,7 @@ if (!Array.isArray(data.requirements) || data.requirements.length === 0) {
   die("et-data.json precisa de requirements[] com pelo menos um RF e trecho de código.");
 }
 
-data.projeto = data.projeto || "Leroy Merlin";
+data.projeto = data.projeto || "Komatsu";
 data.versao = data.versao || "1.0";
 data.status = data.status || "Em revisão";
 data.divergencias = data.divergencias || "Nenhuma";
@@ -94,7 +94,7 @@ html = expand(html, "RF", data.requirements);
 html = expand(html, "ADHERENCE", data.aderencias);
 
 delete data.logo_numen;
-delete data.logo_leroy;
+delete data.logo_komatsu;
 html = fill(html, data);
 const logos = loadLogos(SKILL_ROOT);
 html = injectLogos(html, logos);

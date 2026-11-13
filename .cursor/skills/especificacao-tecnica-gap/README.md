@@ -8,7 +8,7 @@ Anexe também o ZIP `especificacao-tecnica-gap.zip` (pasta completa da skill).
 
 ## 1. O que é
 
-A skill manda o agente gerar a **Especificação Técnica (ET)** no layout PDF Numen × Leroy Merlin, com três blocos:
+A skill manda o agente gerar a **Especificação Técnica (ET)** no layout PDF Numen × Komatsu, com três blocos:
 
 1. Características (GAP, request, sistema, módulo, EF…)
 2. Objetivo (síntese, sem copiar a EF)
@@ -58,7 +58,7 @@ especificacao-tecnica-gap/
 ├── et-data.example.json     ← schema do JSON
 ├── assets/
 │   ├── logo-numen.jpg
-│   └── logo-leroy-merlin.jpg
+│   └── logo-komatsu.jpg
 └── scripts/
     └── render.mjs           ← HTML + PDF
 ```
@@ -115,4 +115,4 @@ node .cursor/skills/especificacao-tecnica-gap/scripts/render.mjs --data <gap>/06
 
 ---
 
-Numen · Projeto Leroy Merlin · Skill `especificacao-tecnica-gap` · v1.0
+Numen · Projeto Komatsu · Skill `especificacao-tecnica-gap` · v1.0

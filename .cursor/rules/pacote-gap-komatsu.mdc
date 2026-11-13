@@ -1,0 +1,85 @@
+---
+description: Ao usar factory_orchestrator (start, kickoff ou Dev), identifica o pacote de desenvolvimento do GAP Leroy.
+alwaysApply: false
+---
+
+# Pacote do GAP — Komatsu
+
+Aplicar no `factory_orchestrator` antes de criar objeto. Catálogo só do **DS4** (aba Process de `Nós de hierarquia de processos.xlsx`).
+
+## Cabeçalho da spec
+
+Ler só: **Módulo**, **Cenário empresarial**, **ID GAP**. O campo Processo nomeia o GAP; não escolhe o nó.
+
+Normalizar cenário e título do catálogo: minúsculas, sem acento, pontuação vira espaço. Ignorar de, do, da, dos, das, e, em. Token casa se for igual ou prefixo (mín. 4 letras). Casar **módulo + cenário**. O mesmo cenário em outro módulo é outro pacote. Vários candidatos no mesmo módulo: parar e perguntar. Sem candidato: parar; não inventar sigla.
+
+`Gestão Trib. Fiscal` casa com `Gestão Tributária e Fiscal`.
+
+## Nome
+
+`{MOD}` = CO, FI, MM, SD, PS, EWM, FSCM ou SRTM (StRM/STRM → SRTM). `{GAP}` = só dígitos, 3 posições (`28` → `028`). `{n}` = tier do objeto (T1, T2 ou T3). A spec não traz o tier: calcular os três e usar o tier do objeto na criação.
+
+| Nível | Nome | Papel |
+|---|---|---|
+| Módulo | `ZP{MOD}_T{n}` | pré-definido, sob `ZP_T{n}` |
+| Cenário (pai) | `ZP{MOD}_{SIGLA}_T{n}` | pré-definido; objetos não nascem aqui |
+| GAP | `ZP{MOD}_{MOD}_{GAP}_T{n}` | pacote a criar |
+
+Sigla = coluna do catálogo, mesmo se o inglês da planilha estiver deslocado. Ex.: MM + Inventário + 187 + T3 → pai `ZPMM_INV_T3`, criar `ZPMM_MM_187_T3`.
+
+## Validar no DS4
+
+`SELECT devclass, parentcl FROM tdevc WHERE devclass = '{pai}'`.
+
+- Sem linha: pai inexistente. Não criar o pacote do GAP nem o nó de cenário.
+- `parentcl` tem de ser `ZP{MOD}_T{n}`.
+- Se `ZP{MOD}_{MOD}_{GAP}_T{n}` já existir, reutilizar. Não criar de novo.
+
+## Catálogo DS4 (módulo | cenário | sigla)
+
+CO | Dados Mestres de CdC e CdL | COST_CENTER
+CO | Gestão de Orçamento de Custos | CUST_BGT_MNGT
+CO | Gestão de Rateio e Distribuição em CO | ALLOC_DIST_MNT
+CO | Ordem Interna - Real / Estatística | INT_ORD
+CO | CO PA - Análise de Rentabilidade | COPA_PROFT
+CO | CO PC - Contabilidade de Custos de Produção | COPC_PRD_COST_ACCT
+FI | Gestão de Ativo | ASSET_MNTT
+FI | Contas a Receber | ACC_RCV
+FI | Contas a Pagar | ACC_PAY
+FI | Contabilidade | ACCT
+FI | Administrar Legislação e Obrigações Acessórias | LEG_STAT_RPT
+MM | Dados Mestres | MSTR_DATA
+MM | Compras | PURCH
+MM | Transferência | TRANSF
+MM | Entrada de mercadoria | GOODS_RCPT
+MM | Inventário | INV
+MM | Gestão Tributária e Fiscal | TAX_FISC_MNGT
+MM | Cross Docking | CROSS_DOCK
+SD | Dados Mestres de BP | BP_MSTR_DATA
+SD | Gestão de Preços | PRIC_MNGT
+SD | Gestão Tributária e Fiscal | TAX_FISC_MNGT
+SD | Outras Saídas | OUTB_DELIV
+SD | Venda Loja | STORE_SALES
+SD | Venda Assistida | ASST_SALES
+SD | Venda de Serviços | SERV_SALES
+SD | Devolução de Vendas | SALES_RET
+PS | Criação de Projetos | PROJ_CRT
+PS | Orçamento de Projetos | PROJ_BGT
+PS | Planejamento de Projetos | PROJ_PLAN
+PS | Execução de Projetos | PROJ_EXEC
+PS | Liquidação e Encerramento Projetos | PROJ_SETT_CLSR
+EWM | Estrutura organizacional | ORG_STRUCT
+EWM | Entradas de mercadoria | MSTR_DATA
+EWM | Movimentos Internos | CROSS_DOCK
+EWM | Saídas de mercadoria | STOCK_STAT_CHG
+EWM | Inventário físico | AUCT_SALES
+EWM | Logística reversa | CONT_INV
+FSCM | TRM - Operações Financeiras | FSCM_TREAS
+FSCM | CLM - Gestão de fluxo de caixa | DEBT_CNTR
+FSCM | COLL/DM - Gestão de Cobrança avançada | FSCM_CRED_COLL
+FSCM | CM - Gestão de crédito avançado | DISPUTE_MNGT
+SRTM | Entradas de mercadoria | STRM_STORE_STOCK
+SRTM | Saídas de mercadoria | TRANSF_RCPT
+SRTM | Logística reversa | STORE_LOCK_PICKUP
+SRTM | Movimentação interna | RET_DIST_CNTR
+SRTM | Inventário | BIN_TRANSF

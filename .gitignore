@@ -1,0 +1,4 @@
+# Mapeamento local chat -> GAP (IDs de chat só existem na máquina de quem criou)
+chats.tmp.json
+EF
+__pycache__/

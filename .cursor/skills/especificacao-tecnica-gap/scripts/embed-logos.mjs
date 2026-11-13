@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const assets = "C:/Users/User/projects/leroy-merlin/new-tools/documentacao/assets";
-const root = "C:/Users/User/projects/leroy-merlin/new-tools/.cursor/skills";
+const assets = "C:/Users/User/projects/komatsu/new-tools/documentacao/assets";
+const root = "C:/Users/User/projects/komatsu/new-tools/.cursor/skills";
 const skills = [
   "especificacao-tecnica-gap",
   "relatorio-testes-gap",
@@ -10,10 +10,10 @@ const skills = [
 ];
 
 const numen = fs.readFileSync(path.join(assets, "logo-numen.jpg"));
-const leroy = fs.readFileSync(path.join(assets, "logo-leroy-merlin.jpg"));
+const komatsu = fs.readFileSync(path.join(assets, "logo-komatsu.jpg"));
 const logos = {
   numenUri: `data:image/jpeg;base64,${numen.toString("base64")}`,
-  leroyUri: `data:image/jpeg;base64,${leroy.toString("base64")}`,
+  komatsuUri: `data:image/jpeg;base64,${komatsu.toString("base64")}`,
 };
 const json = JSON.stringify(logos);
 
@@ -24,7 +24,7 @@ for (const s of skills) {
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, "branding.json"), json);
   fs.copyFileSync(path.join(assets, "logo-numen.jpg"), path.join(dir, "logo-numen.jpg"));
-  fs.copyFileSync(path.join(assets, "logo-leroy-merlin.jpg"), path.join(dir, "logo-leroy-merlin.jpg"));
+  fs.copyFileSync(path.join(assets, "logo-komatsu.jpg"), path.join(dir, "logo-komatsu.jpg"));
   if (s !== "especificacao-tecnica-gap") {
     fs.copyFileSync(brandingSrc, path.join(root, s, "scripts", "branding.mjs"));
   }
@@ -35,8 +35,8 @@ for (const s of skills) {
     `<img class="logo-numen" src="${logos.numenUri}" alt="Numen" />`
   );
   html = html.replace(
-    /<img class="logo-leroy"[^>]*>/g,
-    `<img class="logo-leroy" src="${logos.leroyUri}" alt="Leroy Merlin" />`
+    /<img class="logo-komatsu"[^>]*>/g,
+    `<img class="logo-komatsu" src="${logos.komatsuUri}" alt="Komatsu" />`
   );
   fs.writeFileSync(tpl, html);
   console.log(

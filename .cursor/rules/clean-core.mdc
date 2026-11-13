@@ -1,0 +1,38 @@
+---
+description: Novo desenvolvimento Clean Core; remediação/simplificação fiel ao original
+alwaysApply: true
+---
+
+# Clean Core vs fidelidade
+
+| Tipo de spec | Estilo |
+|--------------|--------|
+| Desenvolvimento novo | Clean Core no máximo possível |
+| Remediação | Manter o código o mais igual ao original |
+| Simplificação | Manter o código o mais igual ao original (simplificar só o que a spec pedir) |
+
+- Esse guia é baseado no clean-core da Leroy, nem todos os projetos vão existir remediação e/ou simplificação. Geralmente essa informação vem da EF Funcional.
+
+## Desenvolvimento novo
+
+- Dado transacional via CDS C1 released (`I_PurchaseOrderItemAPI01`, não `EKPO`).
+- Sem SELECT em tabela clássica se existir view released.
+- BAdI/API clássica só se não houver sucessor C1 — documentar a exceção.
+- Tipos do helper: campos da CDS, não `TYPE ekpo-brtwr`.
+- Sem estrutura append em tabela standard. Campo novo no objeto standard entra por custom fields.
+
+## Remediação e simplificação
+
+- Converter o que existe: mesma regra de negócio, mesmas condições, mesmos cálculos.
+- Não “melhorar” Clean Core, naming, validações ou fluxo sem pedido explícito.
+- Não trocar tabela por CDS se isso alterar o resultado; fidelidade primeiro.
+
+## Exemplos
+
+```
+✅ Novo: SELECT GrossAmount FROM I_PurchaseOrderItemAPI01
+❌ Novo: SELECT brtwr FROM ekpo
+
+✅ Remediação: SELECT ekpo WHERE ... igual ao programa ECC
+❌ Remediação: reescrever em CDS/RAP no meio da conversão sem a spec pedir
+```
