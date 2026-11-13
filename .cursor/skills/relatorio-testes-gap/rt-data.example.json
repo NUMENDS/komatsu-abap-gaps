@@ -1,0 +1,69 @@
+{
+  "gap_id": "GAP-0000",
+  "gap_name": "Nome curto do GAP",
+  "request_id": "REQ-0000",
+  "sistema": "S4H · 100",
+  "modulo": "MM",
+  "projeto": "Leroy Merlin",
+  "executor": "Nome",
+  "data": "14/09/2026",
+  "versao": "1.0",
+  "status": "Aprovado",
+  "ef": "EF-XXXX · versão 1.0",
+  "requisitos_lista": "RF01, RF02",
+  "tdd_mode": "lite",
+  "objetivo_paragrafo": "Este relatório documenta a evidência de testes do GAP Nome curto do GAP (request REQ-0000), obtida via MCP user-abap-mcp-local, e comprova a cobertura da Especificação Funcional EF-XXXX.",
+  "escopo_validacao": "Classe principal e regras RF01–RF02.",
+  "criterio_aceite": "ABAP Unit 100% passed; ATC P1 e P2 = 0; cenários TD-* executados",
+  "unit_passed": "1",
+  "unit_failed": "0",
+  "atc_p1": "0",
+  "atc_p2": "0",
+  "atc_p3": "0",
+  "atc_p4": "0",
+  "atc_variant": "DEFAULT",
+  "atc_worklist_id": "(worklist_id de adt_run_atc)",
+  "parecer": "Testes unitários verdes e ATC sem P1/P2. GAP apto a avançar no gate Tests.",
+  "bugs": "Nenhum",
+  "divergencias": "Nenhuma",
+  "objetos": [
+    {
+      "tipo": "CLAS",
+      "objeto": "ZCL_EXEMPLO",
+      "tool": "adt_run_tests",
+      "resultado": "Passed"
+    }
+  ],
+  "unit_tests": [
+    {
+      "title": "ZCL_EXEMPLO → LTCL_TEST → TEST_RF01",
+      "object": "ZCL_EXEMPLO (CLAS)",
+      "status": "Passed",
+      "duration": "12 ms",
+      "evidence": "adt_run_tests: 1 test class, 1 method, 0 failures."
+    }
+  ],
+  "atc_findings": [],
+  "scenarios": [
+    {
+      "id": "TD-01 / RF01",
+      "title": "Caminho feliz",
+      "spec": "Processar registro válido.",
+      "fonte": "usuario · fornecido",
+      "entrada": "dados válidos",
+      "esperado": "processamento ok",
+      "obtido": "Passed",
+      "status": "Passou",
+      "evidence": "adt_run_tests · TEST_RF01"
+    }
+  ],
+  "dumps": [],
+  "aderencias": [
+    {
+      "id": "RF01",
+      "esperado": "Processar registro válido",
+      "evidencia": "adt_run_tests · TEST_RF01",
+      "aderencia": "Sim"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "gap_id": "GAP-0000",
+  "gap_name": "Nome curto do GAP",
+  "request_id": "REQ-0000",
+  "pacote": "ZLM_EXEMPLO",
+  "origem_destino": "DEV → QAS → PRD",
+  "modulo": "MM",
+  "projeto": "Leroy Merlin",
+  "janela": "DD/MM/AAAA HH:MM–HH:MM",
+  "resp_tecnico": "Nome",
+  "resp_funcional": "Nome",
+  "resp_basis": "Nome",
+  "status": "Planejado",
+  "versao": "1.0",
+  "ef": "EF-XXXX · versão 1.0",
+  "objetivo_paragrafo": "Este plano descreve a implantação em produção do GAP Nome curto do GAP (request REQ-0000), a sequência de importação e as atividades manuais necessárias para a entrada em operação conforme a EF-XXXX.",
+  "escopo_producao": "Objetos do pacote e configuração associada.",
+  "criterio_sucesso": "Objetos ativos, smoke OK, factory close.",
+  "freeze": "Sem alteração paralela no pacote durante a janela.",
+  "sequencia": "Workbench e depois Customizing.",
+  "pos_transporte": "Não se aplica",
+  "rollback_gatilho": "Falha de importação ou smoke.",
+  "rollback_procedimento": "Reverter a última request e desativar job se houver.",
+  "rollback_owner": "Basis",
+  "rollback_tempo": "30 min",
+  "decisao": "GO pendente da janela",
+  "pendencias": "Nenhuma",
+  "objetos": [
+    {
+      "tipo": "CLAS",
+      "objeto": "ZCL_EXEMPLO",
+      "descricao": "Classe principal",
+      "acao": "Importar"
+    }
+  ],
+  "transportes": [
+    {
+      "ordem": "1",
+      "request": "(request confirmada)",
+      "tipo": "Workbench",
+      "descricao": "Objetos ABAP",
+      "destino": "PRD"
+    }
+  ],
+  "activities": [
+    {
+      "id": "CO-01",
+      "title": "Importar workbench",
+      "quando": "T-0",
+      "owner": "Basis",
+      "ambiente": "PRD",
+      "tool": "STMS",
+      "status": "Pendente",
+      "evidence": "Aguardando janela."
+    },
+    {
+      "id": "CO-02",
+      "title": "Smoke pós-import",
+      "quando": "T+0",
+      "owner": "Técnico",
+      "ambiente": "PRD",
+      "tool": "adt_run_tests",
+      "status": "Pendente",
+      "evidence": "Executar após importação."
+    }
+  ],
+  "copies": [],
+  "checks": [
+    {
+      "check": "Objetos no pacote conferidos",
+      "evidencia": "adt_list_package_objects",
+      "ok": "Sim"
+    },
+    {
+      "check": "Smoke pós-import",
+      "evidencia": "adt_run_tests",
+      "ok": "Pendente"
+    },
+    {
+      "check": "GAP encerrado",
+      "evidencia": "factory_orchestrator close",
+      "ok": "Pendente"
+    }
+  ]
+}

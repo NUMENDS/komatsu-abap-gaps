@@ -1,0 +1,32 @@
+{
+  "gap_id": "GAP-0000",
+  "gap_name": "Nome curto do GAP",
+  "request_id": "REQ-0000",
+  "sistema": "S/4HANA",
+  "modulo": "MM",
+  "projeto": "Leroy Merlin",
+  "desenvolvedor": "Nome",
+  "data": "14/09/2026",
+  "versao": "1.0",
+  "status": "Em revisão",
+  "ef": "EF-XXXX · versão 1.0 · 01/09/2026",
+  "requisitos_lista": "RF01, RF02",
+  "objetivo_paragrafo": "Este documento apresenta a especificação técnica do GAP Nome curto do GAP (request REQ-0000), responsável por [capacidade], e comprova a aderência à Especificação Funcional EF-XXXX.",
+  "problema": "Síntese em 1–2 frases.",
+  "resultado_esperado": "O que a spec exige ao final.",
+  "fluxo": "Frontend\n    ↓\nOData V4\n    ↓\nZCL_EXEMPLO\n    ↓\nPersistência / retorno",
+  "visao_geral": "Como a solução atende o objetivo, em 3–5 linhas.",
+  "objetos": [
+    { "tipo": "Classe", "objeto": "ZCL_EXEMPLO", "papel": "Processamento principal" }
+  ],
+  "requirements": [
+    {
+      "id": "RF01",
+      "title": "Título do requisito",
+      "spec": "Citação ou síntese do requisito na EF.",
+      "object": "ZCL_EXEMPLO→METODO",
+      "code": "METHOD metodo.\n  \" trecho lido via adt_read_source\nENDMETHOD."
+    }
+  ],
+  "divergencias": "Nenhuma"
+}

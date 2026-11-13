@@ -1,0 +1,47 @@
+---
+description: Na Komatsu, valor fixo de negocio em validacao ou selecao passa pela classe de parametros. Perguntar se parametriza no app e qual o nome da constante antes de gravar o literal.
+alwaysApply: true
+---
+
+# Parametros — Komatsu
+
+So quando o alvo for Komatsu (`KOMATSU_DS4_*`, host komatsu, ou o usuario pedir desenvolvimento na Komatsu). Fora isso, ignorar esta regra.
+
+Classe existente: `ZCL_XX_CONSTANTES`. Nao criar outra e nao renomear.
+
+## Quando parar e perguntar
+
+Antes de gravar validacao ou selecao que compara com um valor fixo de negocio (empresa, movimento, processo, tipo de documento, centro, ou outro codigo no mesmo papel). Vale para `IF`, `CASE`, `CHECK` e `WHERE`.
+
+Nao perguntar por literal tecnico (`abap_true`, `space`, `sy-subrc`).
+
+Perguntar, e esperar a resposta, antes de escrever o codigo:
+
+1. Esse valor deve ser parametrizado no app de parametros ou fica fixo no codigo?
+2. Se for parametrizar, qual e o nome da constante para passar na chamada?
+
+Nao inventar o nome. Nao cadastrar a constante no app. Se a resposta for ficar fixo, gravar o literal.
+
+## Chamada
+
+Valor unico ou lista de valores:
+
+```abap
+DATA(lt_empresas) = zcl_xx_constantes=>get_unicos( i_name = '{NOME}' ).
+```
+
+Intervalo (de/ate):
+
+```abap
+DATA(lt_movimento) = zcl_xx_constantes=>get_intervalos( i_name = '{NOME}' ).
+```
+
+Os dois devolvem um range. Usar em `IF ... IN` e no `WHERE ... IN`.
+
+Dois parametros na mesma linha:
+
+```abap
+DATA(lt_composto) = zcl_xx_constantes=>get_compostos( i_name = '{NOME}' ).
+```
+
+A busca e so pelo nome. Se nao estiver claro se e unico, intervalo ou composto, perguntar junto.
