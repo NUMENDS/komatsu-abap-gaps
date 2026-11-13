@@ -2,7 +2,7 @@
 name: documentos-gap
 description: >-
   Gera de uma vez o pacote de PDFs do GAP (Especificação Técnica, Relatório de
-  Testes e, se houver, Plano de Cutover) no layout Numen/Leroy Merlin, no mesmo
+  Testes e, se houver, Plano de Cutover) no layout Numen/Komatsu, no mesmo
   chat da factory ABAP (MCP user-abap-mcp-local). Use quando o usuário pedir
   todos os documentos, pacote de documentação, gerar ET + testes + cutover, ou
   documentação completa no Doc/Close. Se não houver atividade de cutover, não
@@ -49,7 +49,7 @@ ou, se o gate passou:
 
 Falha em ET ou testes: parar, não seguir para o próximo, não fingir PDF.
 
-Logos Numen e Leroy Merlin vêm de `assets/branding.json` (e JPG) de cada skill filha. O `render.mjs` as embute no HTML e copia os JPG para a pasta de saída. Não gerar HTML com `src` apontando para `assets/` do GAP.
+Logos Numen e Komatsu vêm de `assets/branding.json` (e JPG) de cada skill filha. O `render.mjs` as embute no HTML e copia os JPG para a pasta de saída. Não gerar HTML com `src` apontando para `assets/` do GAP.
 
 ## Compartilhar contexto
 

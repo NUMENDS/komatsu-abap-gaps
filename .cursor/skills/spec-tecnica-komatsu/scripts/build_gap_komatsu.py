@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Gerador de "Especificação Técnica" no template Capgemini / Leroy Merlin (MOVE2S/4).
+Gerador de "Especificação Técnica" no template Numen.
 
 Reproduz o modelo lido em:
-  LEROY_REL_INCLUIR MÓDULO_IDGAP_Template Especificação Técnica_DDMMAA_V02.docx
+  KOMATSU_REL_INCLUIR MÓDULO_IDGAP_Template Especificação Técnica_DDMMAA_V02.docx
 
 Uso como módulo (recomendado — para gerar a ficha de um GAP real):
     from build_gap_komatsu import build_gap_doc
@@ -31,7 +31,7 @@ Uso como módulo (recomendado — para gerar a ficha de um GAP real):
             "objeto_autorizacao": "",
         },
         "qualidade": {
-            "inspecao": "Executar a transação SCI ... variante CODE_INSP_LEROY_GLOBAL",
+            "inspecao": "Executar a transação SCI ... variante CODE_INSP_KOMATSU_GLOBAL",
             "criterio": "O resultado da inspeção não pode conter erros ...",
             "justificativas": "",
         },
@@ -62,8 +62,8 @@ from docx.shared import Cm, Pt, RGBColor
 
 HERE = Path(__file__).resolve().parent
 MEDIA = HERE / "komatsu_media"
-LOGO_CAPGEMINI = MEDIA / "header_image3.jpg"
-LOGO_LEROY = MEDIA / "header_image4.png"
+LOGO_NUMEN = MEDIA / "header_image3.jpg"
+LOGO_KOMATSU = MEDIA / "header_image4.png"
 
 # --- paleta / medidas lidas do modelo original -----------------------------
 SHADE_COVER_HEADER = "ECECEC"   # linha de título da tabela de capa
@@ -84,8 +84,8 @@ MARGIN_BOTTOM = Cm(2.54)
 # Posições/medidas exatas lidas no wp:anchor do header1.xml do
 # modelo original (EMU). Os logos são flutuantes (behindDoc), não inline —
 # por isso não dá pra posicionar só com tab stop.
-CAPGEMINI_ANCHOR = dict(cx=1831340, cy=629920, pos_h=4551680, pos_v=-207010, behind_doc=True, wrap="through")
-LEROY_ANCHOR = dict(cx=1038225, cy=751840, pos_h=-528955, pos_v=-357505, behind_doc=False, wrap="topbottom")
+NUMEN_ANCHOR = dict(cx=1831340, cy=629920, pos_h=4551680, pos_v=-207010, behind_doc=True, wrap="through")
+KOMATSU_ANCHOR = dict(cx=1038225, cy=751840, pos_h=-528955, pos_v=-357505, behind_doc=False, wrap="topbottom")
 
 _shape_id_counter = itertools.count(251664384, 1024)
 
@@ -331,13 +331,13 @@ def setup_page_and_header_footer(doc: Document) -> None:
     sec.bottom_margin = MARGIN_BOTTOM
 
     # Cabeçalho: os dois logos são flutuantes (behindDoc), com posição
-    # absoluta em relação à coluna/parágrafo — Leroy Merlin fica à ESQUERDA
-    # (offset negativo, quase saindo da margem) e Capgemini à DIREITA
+    # absoluta em relação à coluna/parágrafo — Komatsu fica à ESQUERDA
+    # (offset negativo, quase saindo da margem) e Numen à DIREITA
     # (offset positivo, ~12,6cm). Confirmado direto no wp:anchor do original
     # — a ordem visual NÃO é dada pela ordem dos runs nem por tab stop.
     hdr_p = sec.header.paragraphs[0]
-    add_floating_picture(hdr_p, LOGO_CAPGEMINI, name="Logo Capgemini", **CAPGEMINI_ANCHOR)
-    add_floating_picture(hdr_p, LOGO_LEROY, name="Logo Leroy Merlin", **LEROY_ANCHOR)
+    add_floating_picture(hdr_p, LOGO_NUMEN, name="Logo Numen", **NUMEN_ANCHOR)
+    add_floating_picture(hdr_p, LOGO_KOMATSU, name="Logo Komatsu", **KOMATSU_ANCHOR)
 
 
 def add_toc_field(doc: Document) -> None:
@@ -385,7 +385,7 @@ def add_cover(doc: Document, data: dict) -> None:
 
     sub = doc.add_paragraph()
     sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    set_run(sub.add_run(), "Projeto MOVE2S/4", size=14, bold=True)
+    set_run(sub.add_run(), "Komatsu Steel", size=14, bold=True)
 
     for _ in range(3):
         doc.add_paragraph()
@@ -423,7 +423,7 @@ def add_cover(doc: Document, data: dict) -> None:
     c_proj, c_autor = merge_row(tbl, 1, [(0, 3), (4, 5)])
     fill_label_value(c_proj, "Projeto:", None, "")
     set_run(c_proj.paragraphs[0].add_run(" "), " ", size=11)
-    set_run(c_proj.paragraphs[0].add_run(), data.get("projeto", "MOVE2S/4 (Leroy Merlin)"), size=11)
+    set_run(c_proj.paragraphs[0].add_run(), data.get("projeto", "Komatsu Steel"), size=11)
     fill_label_value(c_autor, "Autor:", "projeto_autor", "<Informar Nome do Consultor Técnico>", data=data)
 
     # Linha 2: "Funcional" mescla 0-3, "Analista TI" mescla 4-5.
@@ -554,7 +554,7 @@ def add_evidencia_qualidade(doc: Document, qlt: dict) -> None:
     rows = [
         (qlt.get("inspecao",
             "Executar a transação SCI para validação do código pelo objeto ou por request. "
-            "Selecionar sempre a variante: CODE_INSP_LEROY_GLOBAL"), "Criar a inspeção", False),
+            "Selecionar sempre a variante: CODE_INSP_KOMATSU_GLOBAL"), "Criar a inspeção", False),
         (qlt.get("criterio",
             "O Resultado da inspeção não pode conter erros, podem conter advertências. Em caso de "
             "erros que não podem ser ajustados (ex.: Classe Proxy, Geração de Código Standard), "
@@ -637,7 +637,7 @@ if __name__ == "__main__":
     import argparse
     import json
 
-    parser = argparse.ArgumentParser(description="Gera a Especificação Técnica Leroy Merlin (MOVE2S/4).")
+    parser = argparse.ArgumentParser(description="Gera a Especificação Técnica Komatsu.")
     parser.add_argument("--data", required=True, help="JSON UTF-8 com os campos do GAP")
     parser.add_argument("--out", required=True, help="Caminho do .docx de saída")
     args = parser.parse_args()

@@ -82,7 +82,7 @@ if (!Array.isArray(data.activities) || data.activities.length === 0) {
   die("co-data.json precisa de activities[] (CO-01…).");
 }
 
-data.projeto = data.projeto || "Leroy Merlin";
+data.projeto = data.projeto || "Komatsu Steel";
 data.versao = data.versao || "1.0";
 data.status = data.status || "Planejado";
 data.tools_mcp =
@@ -130,7 +130,7 @@ html = expand(html, "COPY", data.copies);
 html = expand(html, "CHECK", data.checks);
 
 delete data.logo_numen;
-delete data.logo_leroy;
+delete data.logo_komatsu;
 html = fill(html, data);
 const logos = loadLogos(SKILL_ROOT);
 html = injectLogos(html, logos);

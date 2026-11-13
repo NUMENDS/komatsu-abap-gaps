@@ -3,13 +3,13 @@ name: spec-tecnica-komatsu
 description: >-
   Gera a Especificação Técnica Komatsu em .docx a
   partir da especificação funcional do GAP. Use quando o usuário pedir spec
-  técnica, especificação técnica, template Komatsu, GAP MM/FI/SD, MOVE2S/4,
+  técnica, especificação técnica, template Komatsu, GAP MM/FI/SD,
   EspTec, ou para preencher o modelo Komatsu_REL de especificação técnica.
 ---
 
 # Especificação técnica Komatsu
 
-Gera o `.docx` no modelo Capgemini/Leroy. Não recriar o layout à mão e não editar o OOXML. O gerador está em `scripts/build_gap_komatsu.py` (logos em `scripts/komatsu_media/`).
+Gera o `.docx` no modelo criado pelos funcionais da Numen. Não recriar o layout à mão e não editar o OOXML. O gerador está em `scripts/build_gap_komatsu.py` (logos em `scripts/komatsu_media/`).
 
 Dependências: `python-docx`. Com Word e `pywin32` instalados, o script recalcula SUMÁRIO e número de página. Sem Word, o arquivo abre e o SUMÁRIO só preenche depois de F9.
 
@@ -33,7 +33,7 @@ Não inventar classe de mensagem, campo, tabela ou objeto que a EF não cite. On
 python scripts/build_gap_komatsu.py --data CAMINHO/gap.json --out CAMINHO/SAIDA.docx
 ```
 
-Nome do arquivo: `LEROY_REL_{MODULO}_{ID}_{descricao}_EspTec_{DDMMAA}_V0.docx`, na mesma pasta da EF.
+Nome do arquivo: `KOMATSU_REL_{MODULO}_{ID}_{descricao}_EspTec_{DDMMAA}_V0.docx`, na mesma pasta da EF.
 
 `\n` dentro de um valor vira parágrafo novo na célula.
 
@@ -55,7 +55,7 @@ Nome do arquivo: `LEROY_REL_{MODULO}_{ID}_{descricao}_EspTec_{DDMMAA}_V0.docx`, 
 | `artefatos.tela_selecao` | Print ou `N/A` |
 | `artefatos.itens` | Lista `{objeto, logica}` — um item por objeto, com a regra de negócio |
 | `artefatos.tvarv` / `brf` / `objeto_autorizacao` | Texto ou `N/A — motivo` |
-| `qualidade.justificativas` | `N/A` se não houver proxy nem código standard a justificar. Omitir `inspecao` e `criterio` para manter o texto fixo de SCI / `CODE_INSP_LEROY_GLOBAL`. |
+| `qualidade.justificativas` | `N/A` se não houver proxy nem código standard a justificar. Omitir `inspecao` e `criterio` para manter o texto fixo de SCI / `CODE_INSP_KOMATSU_GLOBAL`. |
 | `teste_unitario_texto` | Procedimento e resultado esperado da EF. Prints ainda não existem: descrever o que anexar, sem marcar como placeholder. |
 
 Exemplo mínimo:

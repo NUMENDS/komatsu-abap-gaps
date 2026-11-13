@@ -1,7 +1,7 @@
 ---
 name: relatorio-testes-gap
 description: >-
-  Gera o Relatório de Testes do GAP no layout PDF Numen/Leroy Merlin, com
+  Gera o Relatório de Testes do GAP no layout PDF Numen/Komatsu, com
   evidências das tools MCP user-abap-mcp-local (adt_run_tests, adt_run_atc,
   adt_read_atc_results, adt_read_runtime_errors, add_test_scenario). Use no
   mesmo chat da factory (estágios ATC e Tests, pastas 04_atc e 05_testes), ou
@@ -42,7 +42,7 @@ node .cursor/skills/relatorio-testes-gap/scripts/render.mjs --data <gap>/05_test
 - Status / contagens / findings = saída da tool, não memória.
 - Recorte de evidência: assert, mensagem ATC ou dump. Não colar a test class inteira.
 - Critério de aceite padrão: Unit 100% passed; ATC P1 e P2 = 0; cenários TD-* executados. Desvio só se a spec/factory disser o contrário.
-- `projeto` padrão: `Leroy Merlin`.
+- `projeto` padrão: `Komatsu Steel`.
 - Bugs: IDs de `triage_bug` (T1/T2/T3) se existirem.
 
 ## rt-data.json
@@ -51,7 +51,7 @@ Ver [rt-data.example.json](rt-data.example.json). Obrigatórios: `gap_id`, `gap_
 
 ## Layout
 
-Não alterar CSS nem ordem das seções de [template.html](template.html). Logos: sempre via `scripts/render.mjs` (data URI + cópia de `logo-numen.jpg` / `logo-leroy-merlin.jpg` na pasta de saída). Não usar `src` relativo a `assets/` do GAP.
+Não alterar CSS nem ordem das seções de [template.html](template.html). Logos: sempre via `scripts/render.mjs` (data URI + cópia de `logo-numen.jpg` / `logo-komatsu.jpg` na pasta de saída). Não usar `src` relativo a `assets/` do GAP.
 
 ## MCP
 
