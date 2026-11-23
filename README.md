@@ -10,7 +10,8 @@ O fluxo abaixo é o de desenvolvimento novo. Remediação e simplificação aind
 | --- | --- | --- |
 | `spec-tecnica-komatsu` | Antes da factory, quando a especificação técnica em Word for pedida | `KOMATSU_REL_{MODULO}_{ID}_{descricao}_EspTec_{DDMMAA}_V0.docx`, ao lado da EF |
 | `novo-objeto` | Análise (estágio 1) e Dev (estágio 2) de GAP novo | Plano em `01_analise/DEVELOPMENT_PLAN.md` e, depois da aprovação, os objetos no SAP |
-| `jira-story-sync` | Só depois da aprovação explícita do plano, e de novo se for pedida no meio ou no fim | Histórias do épico alinhadas ao plano, mais `jira-reference.json` na pasta do GAP |
+| `determine-pacote` | Na análise, antes de fechar o pacote no plano, e de novo no Dev antes de criar qualquer objeto. Também quando for preciso reavaliar onde um objeto já existente deve ficar | Recomendação de pacote consultada no SAP: reutilizar um existente ou propor `ZPKG_T{tier}_{módulo}_{processo}`. Não cria, não move e não exclui pacote |
+| `jira-story-sync` | Depois da aprovação explícita do plano, e de novo se for pedida no meio ou no fim do desenvolvimento | Histórias do épico alinhadas ao plano, mais `jira-reference.json` na pasta do GAP |
 | `relatorio-testes-gap` | ATC (estágio 4) e Testes (estágio 5) | `05_testes/RT-<GAP-ID>.pdf`, com o resultado real de ABAP Unit e ATC |
 | `especificacao-tecnica-gap` | Documentação (estágio 6), com o objeto já criado | `06_doc/ET-<GAP-ID>.pdf`, com trecho de código lido do SAP |
 | `cutover-gap` | Documentação ou Encerramento, e só se houver atividade de implantação | `06_doc/CO-<GAP-ID>.pdf` |
@@ -23,7 +24,7 @@ O fluxo abaixo é o de desenvolvimento novo. Remediação e simplificação aind
 | Regra | O que cobre |
 | --- | --- |
 | `workbook-komatsu` | Nomenclatura, pacote, cabeçalho e qualidade. O texto está em `KOMATSU/_workbook/workbook-komatsu.md` |
-| `pacote-gap-komatsu` | Antes de criar objeto, determina o pacote pela skill `determine-pacote`. Não inventa pacote |
+| `pacote-gap-komatsu` | No start, no kickoff e no Dev da factory, manda executar `determine-pacote` antes de criar objeto. Não inventa pacote e não cria pacote |
 | `parametros-komatsu` | Valor fixo de negócio: perguntar se fica no código ou em `ZCL_XX_CONSTANTES`, e qual é o nome da constante |
 | `clean-core` | Desenvolvimento novo prefere CDS e API released. Remediação e simplificação mantêm a lógica do legado |
 
@@ -80,9 +81,19 @@ O `spec_analyzer` lê a EF no sistema confirmado e grava o plano. Pergunta em ab
 roda o spec_analyzer
 ```
 
-O plano fica em `01_analise/DEVELOPMENT_PLAN.md`. Leia as pendências. Nome, pacote, request e constante que a EF não fecha continuam em aberto até a resposta.
+O plano fica em `01_analise/DEVELOPMENT_PLAN.md`. Leia as pendências. Nome, request e constante que a EF não fecha continuam em aberto até a resposta. O pacote é definido no passo seguinte.
 
-### 4. Responder e aprovar o plano
+### 4. Determinar o pacote
+
+Roda na análise, com o plano já lido, e de novo no Dev antes da primeira gravação. A skill classifica o tier, o módulo e o processo, consulta a hierarquia real no `KOMATSU_DEV_100` e devolve um destes resultados: reutilizar um pacote existente, propor um nome novo, ou pedir confirmação. O nome proposto segue `ZPKG_T{tier}_{módulo}_{processo}`, com no máximo 30 caracteres, e não leva o número do GAP.
+
+```text
+/determine-pacote
+```
+
+A skill só recomenda. Pacote novo continua a ser criado fora dela, por quem tem essa autorização. Objeto só nasce no pacote depois que ele existir no SAP. Se a resposta for confirmação necessária, hierarquia inconsistente ou verificação pendente, pare e resolva antes de criar objeto.
+
+### 5. Responder e aprovar o plano
 
 A aprovação precisa ser explícita. "Pode seguir" no meio de outra tarefa não conta. Enquanto não houver essa frase, o Jira não é sincronizado e o Dev não começa.
 
@@ -96,9 +107,9 @@ Aprovo o plano de desenvolvimento.
 
 Se ainda faltar resposta, diga isso e pare neste passo.
 
-### 5. Sincronizar as histórias
+### 6. Sincronizar as histórias
 
-Roda só depois do passo 4. A skill procura o épico do GAP, compara com o plano aprovado e cria ou atualiza histórias. Não apaga história e não muda status nem responsável sozinha.
+Roda só depois do passo 5. A skill procura o épico do GAP, compara com o plano aprovado e cria ou atualiza histórias. Não apaga história e não muda status nem responsável sozinha.
 
 ```text
 sincroniza as histórias do Jira com o plano aprovado
@@ -107,9 +118,9 @@ sincroniza as histórias do Jira com o plano aprovado
 
 A referência fica em `jira-reference.json`, na pasta do GAP.
 
-### 6. Desenvolver
+### 7. Desenvolver
 
-Estágio 2, Dev. A skill `novo-objeto` cria só o que o plano aprovado lista, no pacote e na request já confirmados. Uma gravação por vez: criar, gravar, ativar.
+Estágio 2, Dev. Antes da primeira gravação, `novo-objeto` relê a regra `pacote-gap-komatsu` e a skill `determine-pacote`. Cria só o que o plano aprovado lista, no pacote já existente e na request já confirmada. Uma gravação por vez: criar, gravar, ativar.
 
 ```text
 pode desenvolver o plano aprovado
@@ -117,7 +128,7 @@ pode desenvolver o plano aprovado
 
 O que não entra neste passo: objeto fora do plano, tabela nova que a EF não pediu, alteração de programa ou formulário standard que a EF mandou preservar.
 
-### 7. Revisar
+### 8. Revisar
 
 Estágio 3, Revisão. O agente relê o objeto no SAP e confronta com a EF e com o plano. Achado que muda regra volta para o Dev. Achado crítico ou alto não segue para o ATC.
 
@@ -125,7 +136,7 @@ Estágio 3, Revisão. O agente relê o objeto no SAP e confronta com a EF e com 
 revisa o desenvolvimento contra a EF
 ```
 
-### 8. Rodar o ATC
+### 9. Rodar o ATC
 
 Estágio 4. O resultado tem de ser uma execução de verdade, com worklist. Lista vazia ou tool que falhou não conta como aprovado.
 
@@ -133,9 +144,9 @@ Estágio 4. O resultado tem de ser uma execução de verdade, com worklist. List
 roda o ATC do GAP
 ```
 
-Se neste ponto já quiser o PDF de evidência, peça o relatório de testes. Ele também pode esperar o passo 9 e sair junto com os testes funcionais.
+Se neste ponto já quiser o PDF de evidência, peça o relatório de testes. Ele também pode esperar o passo 10 e sair junto com os testes funcionais.
 
-### 9. Testar
+### 10. Testar
 
 Estágio 5, Testes e bugs. Os cenários saem da EF. A massa e o resultado esperado ficam registrados. Bug encontrado volta para o Dev antes de fechar o estágio.
 
@@ -145,7 +156,7 @@ executa os testes da EF e gera o relatório
 
 A skill `relatorio-testes-gap` grava `05_testes/RT-<GAP-ID>.pdf` com o retorno de `adt_run_tests` e `adt_run_atc`. Não inventar quantidade de teste passado.
 
-### 10. Documentar
+### 11. Documentar
 
 Estágio 6. A ET em PDF só sai depois que o objeto existe, porque o trecho de código é lido do SAP.
 
@@ -163,7 +174,7 @@ O pacote inteiro:
 
 `documentos-gap` gera a ET e o relatório de testes. O plano de cutover entra só quando há atividade de implantação, com evidência na EF, no `gap.json` ou na conversa. Sem isso, a resposta declara a ressalva e não cria arquivo de cutover.
 
-### 11. Encerrar
+### 12. Encerrar
 
 Estágio 7. O agente confere os gates anteriores e fecha o GAP na factory. Sem o PDF de um estágio obrigatório, o encerramento não é dado como concluído.
 
@@ -171,4 +182,4 @@ Estágio 7. O agente confere os gates anteriores e fecha o GAP na factory. Sem o
 encerra o GAP
 ```
 
-Corte de produção, transporte e rollback continuam no `cutover-gap`, e só quando o passo 10 tiver gerado esse plano.
+Corte de produção, transporte e rollback continuam no `cutover-gap`, e só quando o passo 11 tiver gerado esse plano.
