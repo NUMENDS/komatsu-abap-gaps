@@ -23,7 +23,7 @@ O fluxo abaixo é o de desenvolvimento novo. Remediação e simplificação aind
 | Regra | O que cobre |
 | --- | --- |
 | `workbook-komatsu` | Nomenclatura, pacote, cabeçalho e qualidade. O texto está em `KOMATSU/_workbook/workbook-komatsu.md` |
-| `pacote-gap-komatsu` | Pacote do GAP pelo módulo e pelo cenário empresarial. Sem cenário, o pacote pai não é inventado |
+| `pacote-gap-komatsu` | Antes de criar objeto, determina o pacote pela skill `determine-pacote`. Não inventa pacote |
 | `parametros-komatsu` | Valor fixo de negócio: perguntar se fica no código ou em `ZCL_XX_CONSTANTES`, e qual é o nome da constante |
 | `clean-core` | Desenvolvimento novo prefere CDS e API released. Remediação e simplificação mantêm a lógica do legado |
 

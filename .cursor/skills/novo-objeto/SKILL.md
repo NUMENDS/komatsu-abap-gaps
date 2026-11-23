@@ -47,11 +47,9 @@ Antes do `factory_orchestrator` `start`/`kickoff`, antes de gravar o
    de origem nem copiar implementação legada.
 3. Executar
    `knowledge_graph({ operation: "pre_flight", ferramenta: "komatsu" })`.
-4. Ler a rule `pacote-gap-komatsu.mdc` e derivar o pacote do GAP a partir do
-   módulo, cenário empresarial e ID do GAP. Definir o tier conforme a
-   arquitetura aprovada e as regras do Workbook. Validar o pai e o pacote no
-   DS4 (`TDEVC`); reutilizar o pacote do GAP se já existir. Não inventar
-   sigla.
+4. Ler a rule `pacote-gap-komatsu.mdc` e seguir a skill
+   `determinacao-pacote-abap` para determinar o pacote. Não criar, alterar,
+   mover nem excluir pacote nesse passo.
 5. Usar a request de transporte informada pelo usuário ou registrada no
    `gap.json`. Se não houver request, perguntar; não inventar.
 6. Depois do kickoff, conferir no workspace se existem `gap.json` e as pastas

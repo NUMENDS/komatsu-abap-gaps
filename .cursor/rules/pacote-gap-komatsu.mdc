@@ -1,85 +1,901 @@
+
 ---
-description: Ao usar factory_orchestrator (start, kickoff ou Dev), identifica o pacote de desenvolvimento do GAP Leroy.
-alwaysApply: false
+name: determinacao-pacote-abap
+description: >
+  Analisa desenvolvimentos SAP ABAP, determina automaticamente
+  os Tiers apropriados conforme a arquitetura Clean Core,
+  identifica os módulos e processos de negócio, consulta a
+  hierarquia de pacotes existente via MCP SAP e recomenda
+  pacotes para reutilização ou criação posterior.
+  Esta skill é exclusivamente consultiva e nunca cria,
+  altera, move ou exclui pacotes.
 ---
 
-# Pacote do GAP — Komatsu
+# Skill: Determinação de Pacotes SAP ABAP
 
-Aplicar no `factory_orchestrator` antes de criar objeto. Catálogo só do **DS4** (aba Process de `Nós de hierarquia de processos.xlsx`).
+## 1. Objetivo
 
-## Cabeçalho da spec
+Determinar automaticamente os pacotes SAP ABAP mais
+adequados para um desenvolvimento.
 
-Ler só: **Módulo**, **Cenário empresarial**, **ID GAP**. O campo Processo nomeia o GAP; não escolhe o nó.
+A skill deve:
 
-Normalizar cenário e título do catálogo: minúsculas, sem acento, pontuação vira espaço. Ignorar de, do, da, dos, das, e, em. Token casa se for igual ou prefixo (mín. 4 letras). Casar **módulo + cenário**. O mesmo cenário em outro módulo é outro pacote. Vários candidatos no mesmo módulo: parar e perguntar. Sem candidato: parar; não inventar sigla.
+1. Analisar o desenvolvimento solicitado.
+2. Identificar as necessidades funcionais e técnicas.
+3. Determinar o Tier adequado para cada componente.
+4. Identificar o módulo funcional responsável.
+5. Determinar o processo de negócio.
+6. Consultar a estrutura existente por meio do MCP SAP.
+7. Identificar pacotes existentes e compatíveis.
+8. Priorizar a reutilização de pacotes.
+9. Propor novos nomes apenas quando necessário.
+10. Retornar decisões fundamentadas ao agente consumidor.
 
-`Gestão Trib. Fiscal` casa com `Gestão Tributária e Fiscal`.
+O Tier não precisa ser informado previamente.
 
-## Nome
+A determinação deve utilizar evidências técnicas obtidas
+do desenvolvimento, da documentação e do ambiente SAP.
 
-`{MOD}` = CO, FI, MM, SD, PS, EWM, FSCM ou SRTM (StRM/STRM → SRTM). `{GAP}` = só dígitos, 3 posições (`28` → `028`). `{n}` = tier do objeto (T1, T2 ou T3). A spec não traz o tier: calcular os três e usar o tier do objeto na criação.
+**ESTA SKILL NUNCA CRIA PACOTES.**
 
-| Nível | Nome | Papel |
-|---|---|---|
-| Módulo | `ZP{MOD}_T{n}` | pré-definido, sob `ZP_T{n}` |
-| Cenário (pai) | `ZP{MOD}_{SIGLA}_T{n}` | pré-definido; objetos não nascem aqui |
-| GAP | `ZP{MOD}_{MOD}_{GAP}_T{n}` | pacote a criar |
+---
 
-Sigla = coluna do catálogo, mesmo se o inglês da planilha estiver deslocado. Ex.: MM + Inventário + 187 + T3 → pai `ZPMM_INV_T3`, criar `ZPMM_MM_187_T3`.
+## 2. Princípios fundamentais
 
-## Validar no DS4
+### 2.1 Determinação automática
 
-`SELECT devclass, parentcl FROM tdevc WHERE devclass = '{pai}'`.
+O agente deve determinar o Tier com base no desenvolvimento.
 
-- Sem linha: pai inexistente. Não criar o pacote do GAP nem o nó de cenário.
-- `parentcl` tem de ser `ZP{MOD}_T{n}`.
-- Se `ZP{MOD}_{MOD}_{GAP}_T{n}` já existir, reutilizar. Não criar de novo.
+Não deve exigir um Tier como entrada obrigatória.
 
-## Catálogo DS4 (módulo | cenário | sigla)
+Se um Tier já estiver definido em um plano aprovado,
+deve considerá-lo como uma restrição arquitetural.
 
-CO | Dados Mestres de CdC e CdL | COST_CENTER
-CO | Gestão de Orçamento de Custos | CUST_BGT_MNGT
-CO | Gestão de Rateio e Distribuição em CO | ALLOC_DIST_MNT
-CO | Ordem Interna - Real / Estatística | INT_ORD
-CO | CO PA - Análise de Rentabilidade | COPA_PROFT
-CO | CO PC - Contabilidade de Custos de Produção | COPC_PRD_COST_ACCT
-FI | Gestão de Ativo | ASSET_MNTT
-FI | Contas a Receber | ACC_RCV
-FI | Contas a Pagar | ACC_PAY
-FI | Contabilidade | ACCT
-FI | Administrar Legislação e Obrigações Acessórias | LEG_STAT_RPT
-MM | Dados Mestres | MSTR_DATA
-MM | Compras | PURCH
-MM | Transferência | TRANSF
-MM | Entrada de mercadoria | GOODS_RCPT
-MM | Inventário | INV
-MM | Gestão Tributária e Fiscal | TAX_FISC_MNGT
-MM | Cross Docking | CROSS_DOCK
-SD | Dados Mestres de BP | BP_MSTR_DATA
-SD | Gestão de Preços | PRIC_MNGT
-SD | Gestão Tributária e Fiscal | TAX_FISC_MNGT
-SD | Outras Saídas | OUTB_DELIV
-SD | Venda Loja | STORE_SALES
-SD | Venda Assistida | ASST_SALES
-SD | Venda de Serviços | SERV_SALES
-SD | Devolução de Vendas | SALES_RET
-PS | Criação de Projetos | PROJ_CRT
-PS | Orçamento de Projetos | PROJ_BGT
-PS | Planejamento de Projetos | PROJ_PLAN
-PS | Execução de Projetos | PROJ_EXEC
-PS | Liquidação e Encerramento Projetos | PROJ_SETT_CLSR
-EWM | Estrutura organizacional | ORG_STRUCT
-EWM | Entradas de mercadoria | MSTR_DATA
-EWM | Movimentos Internos | CROSS_DOCK
-EWM | Saídas de mercadoria | STOCK_STAT_CHG
-EWM | Inventário físico | AUCT_SALES
-EWM | Logística reversa | CONT_INV
-FSCM | TRM - Operações Financeiras | FSCM_TREAS
-FSCM | CLM - Gestão de fluxo de caixa | DEBT_CNTR
-FSCM | COLL/DM - Gestão de Cobrança avançada | FSCM_CRED_COLL
-FSCM | CM - Gestão de crédito avançado | DISPUTE_MNGT
-SRTM | Entradas de mercadoria | STRM_STORE_STOCK
-SRTM | Saídas de mercadoria | TRANSF_RCPT
-SRTM | Logística reversa | STORE_LOCK_PICKUP
-SRTM | Movimentação interna | RET_DIST_CNTR
-SRTM | Inventário | BIN_TRANSF
+Entretanto, se houver evidências de incompatibilidade,
+deve sinalizar o conflito em vez de aceitar a
+classificação incorreta.
+
+### 2.2 Priorizar Clean Core
+
+Sempre priorizar abordagens compatíveis com ABAP Cloud.
+
+A preferência arquitetural é:
+
+1. Tier 1: ABAP Cloud.
+2. Tier 2: Encapsulamento controlado de APIs clássicas.
+3. Tier 3: ABAP clássico quando necessário.
+
+A ordem expressa uma preferência, não uma regra
+de classificação automática.
+
+Não selecionar Tier 1 sem verificar viabilidade.
+
+Não selecionar Tier 2 apenas porque o código utiliza
+Standard ABAP.
+
+Não selecionar Tier 3 apenas porque uma API não
+foi encontrada na primeira pesquisa.
+
+### 2.3 Classificação por componente
+
+Um desenvolvimento pode exigir múltiplos Tiers.
+
+A classificação deve ocorrer por componente técnico
+ou responsabilidade arquitetural.
+
+Nunca assumir que todos os objetos de um GAP
+pertencem obrigatoriamente ao mesmo Tier.
+
+### 2.4 Separação de responsabilidades
+
+A skill determina:
+
+- O Tier.
+- O módulo funcional.
+- O processo de negócio.
+- O pacote adequado.
+- A necessidade de reutilização ou criação posterior.
+
+A skill não implementa objetos ABAP.
+
+A skill não cria nem modifica pacotes SAP.
+
+---
+
+## 3. Entradas e contexto
+
+Utilizar todas as informações disponíveis:
+
+- Título do desenvolvimento.
+- Descrição funcional.
+- Especificação funcional.
+- Especificação técnica.
+- Plano de desenvolvimento.
+- Identificador do GAP.
+- Requisitos técnicos.
+- Objetos SAP envolvidos.
+- APIs ou BAPIs necessárias.
+- BAdIs ou pontos de extensão.
+- Integrações.
+- Restrições arquiteturais.
+- Ambiente SAP de destino.
+- Versão e edição do S/4HANA, quando disponíveis.
+
+O GAP é utilizado somente para rastreabilidade.
+
+O identificador do GAP nunca deve determinar
+o nome do pacote.
+
+Se houver documentação incompleta, utilizar
+as evidências disponíveis e identificar lacunas.
+
+Não inventar APIs, objetos liberados ou capacidades
+do ambiente SAP.
+
+---
+
+## 4. Determinação automática do Tier
+
+Esta é uma etapa obrigatória e deve ocorrer
+ANTES da pesquisa de pacotes.
+
+O agente deve analisar o desenvolvimento e
+identificar a abordagem técnica necessária.
+
+### 4.1 Tier 1 — ABAP Cloud
+
+Selecionar Tier 1 quando o componente puder
+ser desenvolvido utilizando:
+
+- ABAP for Cloud Development.
+- APIs SAP liberadas para o uso pretendido.
+- Objetos customizados compatíveis com ABAP Cloud.
+- ABAP RESTful Application Programming Model (RAP).
+- CDS Views compatíveis.
+- Behavior Definitions e Implementations.
+- Serviços OData.
+- BAdIs liberadas para extensibilidade.
+- APIs customizadas devidamente liberadas.
+
+Exemplos de componentes potencialmente Tier 1:
+
+- Serviço RAP utilizando APIs liberadas.
+- CDS View consumindo fontes permitidas.
+- Classe de regra de negócio compatível com ABAP Cloud.
+- Implementação de BAdI liberada.
+- Serviço OData V4 com modelo compatível.
+
+A tecnologia, isoladamente, não comprova Tier 1.
+
+O agente deve verificar também as dependências
+do componente.
+
+#### Validações obrigatórias
+
+1. A tecnologia é suportada no ambiente?
+2. O tipo de objeto é permitido em ABAP Cloud?
+3. As APIs utilizadas possuem liberação adequada?
+4. As dependências são compatíveis?
+5. Há restrições técnicas que impeçam a implementação?
+
+Se todas as condições necessárias forem atendidas,
+classificar o componente como Tier 1.
+
+Se faltar uma API liberada, investigar as
+alternativas antes de mudar o Tier.
+
+---
+
+### 4.2 Tier 2 — Encapsulamento de APIs clássicas
+
+Selecionar Tier 2 para componentes cuja
+responsabilidade seja encapsular funcionalidades
+clássicas não liberadas diretamente para ABAP Cloud.
+
+Tier 2 deve funcionar como uma camada controlada
+de acesso às funcionalidades necessárias.
+
+Exemplos:
+
+- Wrapper de BAPI não liberada para ABAP Cloud.
+- Wrapper de Function Module clássico.
+- Classe de encapsulamento de API SAP clássica.
+- CDS wrapper para fonte não liberada, quando permitido.
+- Interface customizada para exposição de funcionalidade
+  clássica ao desenvolvimento ABAP Cloud.
+
+#### Condições de utilização
+
+Antes de recomendar Tier 2:
+
+1. Verificar se já existe API liberada equivalente.
+2. Verificar se existe wrapper customizado reutilizável.
+3. Identificar a API clássica necessária.
+4. Verificar se o uso da API clássica é recomendado
+   ou aceitável conforme as diretrizes SAP.
+5. Verificar a viabilidade do encapsulamento.
+6. Identificar o contrato de liberação apropriado,
+   quando aplicável.
+7. Avaliar as restrições de integração com Tier 1.
+
+Somente classificar como Tier 2 quando a estratégia
+de wrapper for tecnicamente justificável.
+
+Não utilizar Tier 2 para contornar indiscriminadamente
+as restrições de ABAP Cloud.
+
+#### Separação de componentes
+
+Se a funcionalidade possuir uma aplicação ABAP Cloud
+que dependa de uma BAPI não liberada:
+
+- A aplicação pode permanecer no Tier 1.
+- O wrapper deve ser classificado no Tier 2.
+
+O agente deve retornar ambos os componentes,
+com pacotes distintos.
+
+---
+
+### 4.3 Tier 3 — ABAP clássico
+
+Selecionar Tier 3 quando a implementação
+necessitar efetivamente de tecnologias ou
+pontos de extensão clássicos que não possam
+ser atendidos adequadamente pelos Tiers anteriores.
+
+Exemplos:
+
+- Programas Dynpro clássicos.
+- Transações SAP GUI com tecnologia não suportada
+  pelo modelo ABAP Cloud.
+- Implementações de BAdIs não liberadas.
+- User Exits clássicos.
+- Enhancements clássicos necessários.
+- Componentes legados com dependências incompatíveis
+  com a abordagem Cloud.
+
+A classificação deve considerar as restrições reais
+do cenário e da tecnologia.
+
+#### Validações obrigatórias
+
+1. Existe alternativa viável em ABAP Cloud?
+2. É possível isolar a dependência em Tier 2?
+3. A tecnologia clássica é realmente necessária?
+4. Existe restrição funcional ou técnica que
+   inviabilize as alternativas anteriores?
+5. A escolha está fundamentada?
+
+Não recomendar Tier 3 somente por ser mais fácil
+desenvolver utilizando ABAP clássico.
+
+Se o uso de tecnologia clássica for solicitado,
+mas houver alternativa moderna viável,
+apresentar a alternativa e sinalizar a decisão
+arquitetural necessária.
+
+Não modificar automaticamente a arquitetura
+aprovada pelo responsável técnico.
+
+---
+
+## 5. Fluxo de classificação técnica
+
+A determinação deve seguir esta sequência.
+
+### ETAPA 1 — Identificar os componentes
+
+Analisar o desenvolvimento e identificar:
+
+- Objetos a criar ou alterar.
+- Responsabilidades técnicas.
+- APIs necessárias.
+- Integrações.
+- Pontos de extensão.
+- Tecnologias obrigatórias.
+
+Não classificar apenas pelo título.
+
+Exemplo:
+
+"Implementar aprovação de pedido de compra
+utilizando BAPI não liberada"
+
+Componentes possíveis:
+
+1. Aplicação e regras de negócio.
+2. Wrapper da BAPI.
+3. Interface entre aplicação e wrapper.
+
+Cada componente deve ser avaliado separadamente.
+
+### ETAPA 2 — Avaliar Tier 1
+
+Para cada componente:
+
+1. Consultar tecnologias e objetos necessários.
+2. Verificar se existem APIs SAP liberadas.
+3. Verificar a compatibilidade com ABAP Cloud.
+4. Verificar alternativas liberadas.
+
+Se viável, selecionar Tier 1.
+
+Caso contrário, registrar a restrição encontrada.
+
+### ETAPA 3 — Avaliar Tier 2
+
+Se houver dependência de API não liberada:
+
+1. Identificar a funcionalidade requerida.
+2. Pesquisar alternativas liberadas.
+3. Verificar wrappers existentes.
+4. Avaliar se um wrapper é apropriado.
+5. Consultar restrições e recomendações SAP.
+
+Se o encapsulamento for apropriado:
+
+- Classificar o wrapper como Tier 2.
+- Manter componentes compatíveis no Tier 1.
+- Registrar a dependência entre componentes.
+
+### ETAPA 4 — Avaliar Tier 3
+
+Quando Tier 1 não for viável e o Tier 2 não
+resolver adequadamente a necessidade:
+
+1. Identificar a tecnologia clássica.
+2. Justificar sua obrigatoriedade.
+3. Identificar os objetos afetados.
+4. Avaliar riscos arquiteturais.
+5. Classificar o componente como Tier 3,
+   se tecnicamente justificado.
+
+### ETAPA 5 — Validar a classificação
+
+Revisar:
+
+- Compatibilidade dos objetos.
+- Disponibilidade das APIs.
+- Dependências entre componentes.
+- Versão e edição do sistema.
+- Restrições de linguagem.
+- Decisões arquiteturais existentes.
+
+Se a evidência for insuficiente, retornar
+DETERMINACAO_PENDENTE.
+
+Nunca inventar uma conclusão para prosseguir.
+
+---
+
+## 6. Consulta técnica via MCP SAP
+
+O MCP deve ser utilizado para coletar evidências
+sempre que suas ferramentas permitirem.
+
+### Consultas desejadas
+
+- Identificar versão e características do ambiente.
+- Consultar existência de APIs SAP.
+- Consultar estado de liberação dos objetos.
+- Consultar propriedades de objetos ABAP.
+- Consultar BAdIs e respectivos estados de liberação.
+- Consultar classes e interfaces existentes.
+- Consultar wrappers customizados.
+- Consultar pacotes e respectivas propriedades.
+- Consultar dependências técnicas.
+- Consultar objetos pertencentes aos pacotes.
+
+O agente deve utilizar ferramentas MCP realmente
+disponíveis.
+
+Não inventar nomes de ferramentas.
+
+### Limitações
+
+Se o MCP não permitir verificar se uma API é liberada:
+
+- Não assumir que é liberada.
+- Não assumir que não é liberada.
+- Registrar a verificação pendente.
+- Não classificar como Tier 1 confirmado com base
+  apenas na descrição funcional.
+
+Se a conclusão depender da informação ausente,
+solicitar a confirmação necessária.
+
+Consultas ao repositório SAP são somente leitura.
+
+---
+
+## 7. Desenvolvimentos com múltiplos Tiers
+
+Um GAP pode exigir componentes em vários Tiers.
+
+O agente deve determinar cada componente
+independentemente.
+
+### Exemplo
+
+Desenvolvimento:
+
+"Criar aplicação de manutenção de pedidos de compra,
+expondo serviço OData V4 por RAP, com utilização
+de BAPI SAP não liberada."
+
+Supondo que a consulta técnica confirme a necessidade
+e a viabilidade de encapsular a BAPI:
+
+Componente 1:
+Aplicação RAP
+
+Tier:
+1
+
+Componente 2:
+Wrapper da BAPI
+
+Tier:
+2
+
+Pacotes potenciais:
+
+ZPKG_T1_MM_PURCHASE_ORDER
+ZPKG_T2_MM_PURCHASE_ORDER
+
+A classificação deve ser registrada individualmente.
+
+Não colocar todo o desenvolvimento no Tier 2
+apenas porque uma dependência utiliza API clássica.
+
+Não colocar o wrapper no Tier 1 sem comprovar
+compatibilidade com ABAP Cloud.
+
+---
+
+## 8. Estrutura obrigatória de pacotes
+
+A arquitetura utiliza três níveis hierárquicos.
+
+### Nível 1 — Tier
+
+ZPKG_TIER1
+ZPKG_TIER2
+ZPKG_TIER3
+
+### Nível 2 — Módulo
+
+Exemplos:
+
+ZPKG_TIER1
+  ZPKG_T1_MM
+  ZPKG_T1_SD
+  ZPKG_T1_FI
+
+ZPKG_TIER2
+  ZPKG_T2_MM
+  ZPKG_T2_SD
+  ZPKG_T2_FI
+
+ZPKG_TIER3
+  ZPKG_T3_MM
+  ZPKG_T3_SD
+  ZPKG_T3_FI
+
+### Nível 3 — Processo de negócio
+
+Exemplos:
+
+ZPKG_TIER1
+  ZPKG_T1_MM
+    ZPKG_T1_MM_PURCHASE_ORDER
+    ZPKG_T1_MM_GOODS_RECEIPT
+
+ZPKG_TIER2
+  ZPKG_T2_MM
+    ZPKG_T2_MM_PURCHASE_ORDER
+
+ZPKG_TIER3
+  ZPKG_T3_MM
+    ZPKG_T3_MM_PURCHASE_ORDER
+
+Os exemplos não comprovam a existência dos pacotes.
+
+O agente deve consultar a estrutura real.
+
+---
+
+## 9. Determinação do módulo e processo
+
+Após classificar os componentes por Tier,
+determinar o módulo e o processo de negócio.
+
+### Módulo funcional
+
+Exemplos:
+
+MM — Materials Management
+SD — Sales and Distribution
+FI — Financial Accounting
+CO — Controlling
+PP — Production Planning
+QM — Quality Management
+PM — Plant Maintenance
+EWM — Extended Warehouse Management
+
+Identificar o módulo proprietário do processo.
+
+Não escolher o módulo com base apenas em uma
+tabela ou API acessada.
+
+### Processo de negócio
+
+Determinar a responsabilidade funcional.
+
+Exemplos:
+
+Pedido de compra:
+PURCHASE_ORDER
+
+Recebimento de mercadoria:
+GOODS_RECEIPT
+
+Ordem de venda:
+SALES_ORDER
+
+Execução de pagamentos:
+PAYMENT_RUN
+
+O processo deve ser identificado a partir da
+necessidade funcional, não do identificador do GAP.
+
+### Processo compartilhado
+
+Componentes de Tiers diferentes podem representar
+o mesmo processo de negócio.
+
+Nesse caso, o identificador funcional pode ser igual,
+mantendo a distinção pelo Tier.
+
+---
+
+## 10. Determinação do pacote
+
+Para cada componente classificado:
+
+1. Identificar o Tier.
+2. Identificar o módulo.
+3. Identificar o processo.
+4. Consultar o pacote raiz via MCP.
+5. Consultar o pacote do módulo.
+6. Listar os subpacotes de processo.
+7. Comparar os nomes e descrições.
+8. Verificar a hierarquia real.
+9. Verificar a compatibilidade técnica.
+10. Determinar reutilização ou proposta de novo pacote.
+
+### Regra de reutilização
+
+Priorizar pacotes existentes que possuam:
+
+- Tier adequado.
+- Módulo correto.
+- Processo compatível.
+- Hierarquia correta.
+- Propriedades técnicas compatíveis.
+
+O nome não precisa ser exatamente igual ao
+processo identificado se a equivalência funcional
+estiver comprovada.
+
+Exemplo:
+
+Desenvolvimento:
+Validação de preço no pedido de compra.
+
+Pacote existente:
+ZPKG_T1_MM_PURCHASE_ORDER
+
+Resultado:
+Reutilizar, caso a compatibilidade seja confirmada.
+
+Não criar pacote específico para a validação.
+
+---
+
+## 11. Nomenclatura de novos pacotes
+
+Quando nenhum pacote compatível existir,
+propor um nome seguindo:
+
+ZPKG_T{TIER}_{MODULO}_{PROCESSO}
+
+### Regras obrigatórias
+
+- Letras maiúsculas.
+- Sem espaços.
+- Sem acentos.
+- Termos separados por underscore.
+- Limite de 30 caracteres.
+- Processo claramente identificável.
+- Preferência por terminologia SAP em inglês.
+- Abreviações reconhecíveis quando necessárias.
+- Consistência com os nomes existentes.
+
+### Proibições
+
+Não utilizar:
+
+- Número do GAP.
+- Número de User Story.
+- Nome do desenvolvedor.
+- Número de transporte.
+- Data.
+- Identificadores temporários.
+- Nomes genéricos como MISC, NEW ou CHANGE.
+
+### Exemplos
+
+Correto:
+ZPKG_T1_MM_PURCHASE_ORDER
+
+Correto:
+ZPKG_T2_MM_PURCHASE_ORDER
+
+Correto:
+ZPKG_T3_SD_SALES_ORDER
+
+Incorreto:
+ZPKG_T1_MM_GAP1045
+
+Incorreto:
+ZPKG_T1_MM_NEW_DEV
+
+Se o nome ultrapassar 30 caracteres,
+utilizar abreviações sem perder o significado.
+
+Antes de propor um nome, verificar se ele
+já está ocupado no ambiente SAP.
+
+---
+
+## 12. Granularidade dos pacotes
+
+Um pacote representa um processo ou uma
+responsabilidade funcional coesa.
+
+Não criar uma nova proposta de pacote para cada:
+
+- GAP.
+- User Story.
+- Classe.
+- CDS View.
+- BAdI.
+- Regra de validação.
+- Campo adicional.
+- Pequena melhoria.
+
+Exemplo:
+
+Desenvolvimento A:
+Validação de centro de custo no pedido.
+
+Desenvolvimento B:
+Validação de preço no pedido.
+
+Desenvolvimento C:
+Bloqueio de alterações após aprovação.
+
+Todos podem reutilizar:
+
+ZPKG_T1_MM_PURCHASE_ORDER
+
+Desde que pertençam ao mesmo contexto funcional
+e sejam tecnicamente compatíveis.
+
+---
+
+## 13. Tratamento de incertezas
+
+### Tier não determinado
+
+Se não houver evidência suficiente:
+
+- Registrar as dependências desconhecidas.
+- Identificar as consultas necessárias.
+- Apresentar a hipótese técnica, se útil.
+- Não tratar a hipótese como confirmação.
+- Solicitar esclarecimento quando indispensável.
+
+Status:
+DETERMINACAO_PENDENTE
+
+### Vários Tiers possíveis
+
+Se houver abordagens alternativas:
+
+- Priorizar a análise de Tier 1.
+- Avaliar a necessidade real de wrappers.
+- Comparar as restrições técnicas.
+- Informar as alternativas e suas dependências.
+- Não escolher uma alternativa sem evidência.
+
+Se existir decisão arquitetural aprovada,
+respeitá-la ou sinalizar sua incompatibilidade.
+
+### Pacote inexistente
+
+Se o MCP confirmar que não há pacote adequado:
+
+Status:
+PROPOR_NOVO
+
+Retornar apenas a proposta.
+
+Não criar o pacote.
+
+### Hierarquia incompleta
+
+Se o Tier ou módulo não existir na estrutura:
+
+Status:
+HIERARQUIA_INCONSISTENTE
+
+Informar os níveis ausentes.
+
+Não criar a estrutura.
+
+### MCP indisponível
+
+Se não for possível consultar os pacotes:
+
+Status:
+VERIFICACAO_PENDENTE
+
+Não afirmar inexistência de pacote.
+
+---
+
+## 14. Formato de saída
+
+A saída deve permitir múltiplos componentes e
+múltiplos pacotes para um único desenvolvimento.
+
+Exemplo de retorno:
+
+{
+  "gap": "GAP-1045",
+  "desenvolvimento": "Manutencao de pedidos de compra",
+  "modulo": "MM",
+  "processo": "Purchase Order",
+  "status_geral": "DETERMINADO",
+  "componentes": [
+    {
+      "componente": "Aplicacao RAP",
+      "tier": 1,
+      "justificativa_tier": "Compativel com ABAP Cloud",
+      "pacote": "ZPKG_T1_MM_PURCHASE_ORDER",
+      "superpackage": "ZPKG_T1_MM",
+      "status_pacote": "REUTILIZAR_EXISTENTE",
+      "existencia_confirmada_mcp": true,
+      "compatibilidade_confirmada": true
+    },
+    {
+      "componente": "Wrapper de BAPI",
+      "tier": 2,
+      "justificativa_tier": "Encapsulamento de API classica",
+      "pacote": null,
+      "pacote_proposto": "ZPKG_T2_MM_PURCHASE_ORDER",
+      "superpackage": "ZPKG_T2_MM",
+      "status_pacote": "PROPOR_NOVO",
+      "existencia_confirmada_mcp": false,
+      "compatibilidade_confirmada": null
+    }
+  ],
+  "criacao_executada": false
+}
+
+Este exemplo representa uma situação em que
+as verificações técnicas já foram concluídas.
+
+Quando uma informação não estiver comprovada,
+utilizar null ou um estado pendente.
+
+Não gerar resultados falsamente confirmados.
+
+### Estados de pacote
+
+REUTILIZAR_EXISTENTE
+PROPOR_NOVO
+CONFIRMACAO_NECESSARIA
+HIERARQUIA_INCONSISTENTE
+VERIFICACAO_PENDENTE
+COLISAO_NOME
+
+### Estados de determinação
+
+DETERMINADO
+DETERMINACAO_PENDENTE
+CONFLITO_ARQUITETURAL
+
+---
+
+## 15. Integração com o Factory Orchestrator
+
+Quando esta skill for invocada:
+
+1. Receber o contexto disponível do desenvolvimento.
+2. Analisar o plano técnico e as especificações.
+3. Determinar os componentes necessários.
+4. Classificar os componentes por Tier.
+5. Determinar módulo e processo de cada componente.
+6. Consultar o MCP SAP.
+7. Determinar os pacotes adequados.
+8. Retornar todas as decisões.
+9. Encerrar sem modificar o ambiente SAP.
+
+O Factory Orchestrator poderá utilizar o retorno
+para direcionar a criação futura dos objetos ABAP.
+
+Se houver PROPOR_NOVO, o orquestrador deve
+encaminhar a necessidade para um fluxo autorizado
+de criação de pacotes.
+
+Não assumir que a proposta já existe no SAP.
+
+Se um componente estiver pendente de definição,
+não liberar sua criação em um pacote arbitrário.
+
+---
+
+## 16. Checklist obrigatório
+
+Antes de finalizar:
+
+- [ ] O desenvolvimento foi analisado?
+- [ ] Os componentes foram identificados?
+- [ ] O Tier foi determinado por componente?
+- [ ] A viabilidade de Tier 1 foi avaliada?
+- [ ] APIs liberadas foram verificadas?
+- [ ] Necessidades de wrapper foram avaliadas?
+- [ ] Tier 3 foi justificado quando utilizado?
+- [ ] O módulo funcional foi identificado?
+- [ ] O processo de negócio foi identificado?
+- [ ] A hierarquia foi consultada via MCP?
+- [ ] Pacotes existentes foram avaliados?
+- [ ] A reutilização foi priorizada?
+- [ ] Nomes propostos têm até 30 caracteres?
+- [ ] Nenhum nome utiliza o número do GAP?
+- [ ] O resultado possui justificativa técnica?
+- [ ] Incertezas foram registradas?
+- [ ] Nenhum pacote foi criado ou alterado?
+
+---
+
+## 17. Restrição absoluta de escrita
+
+Esta skill é exclusivamente consultiva.
+
+NUNCA:
+
+- Criar pacotes SAP.
+- Alterar pacotes existentes.
+- Renomear pacotes.
+- Modificar Superpackages.
+- Excluir pacotes.
+- Mover objetos.
+- Criar classes ou outros objetos ABAP.
+- Executar ferramentas MCP de escrita.
+
+Mesmo quando a classificação e a proposta
+estiverem completamente determinadas,
+não executar a criação.
+
+A responsabilidade termina na determinação
+e recomendação.
+
+**ANALISAR -> DETERMINAR TIER -> DETERMINAR
+PROCESSO -> CONSULTAR MCP -> RECOMENDAR.**
+
+**NUNCA CRIAR PACOTES.**

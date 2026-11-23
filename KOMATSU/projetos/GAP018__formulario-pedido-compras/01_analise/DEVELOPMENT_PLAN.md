@@ -27,7 +27,7 @@ Confirmação para o funcional:
 - [ ] O fax permanece no modelo antigo.
 - [ ] O sistema não grava o aceite do fornecedor.
 
-Para quem for desenvolver: as seções abaixo registram o que copiar, o que não alterar, o que já existe no `KOMATSU_DEV_100` e o que ainda precisa de resposta antes de criar o objeto.
+Para quem for desenvolver: as seções abaixo registram o que levar à mão para os objetos novos, o que não alterar, o que já existe no `KOMATSU_DEV_100` e o que ainda precisa de resposta antes de criar o objeto.
 
 ## Escopo
 
@@ -55,13 +55,15 @@ Não há tabela nova, módulo de função novo, objeto de autorização, TVARV n
 
 | Papel | Nome | Situação no DS4 em 13/11/2026 | Ação |
 |---|---|---|---|
-| Formulário padrão | `MEDRUCK_PO` | Existe, tipo formulário Adobe, pacote `MMPUR_PRINT`, não eliminado | Não alterar |
+| Formulário padrão | `MEDRUCK_PO` | Existe, tipo formulário Adobe, pacote `MMPUR_PRINT`, não eliminado | Não alterar. Serve só de origem para passar o conteúdo à mão |
+| Interface padrão | a interface do `MEDRUCK_PO` | Não reutilizar | Não alterar. Serve só de origem para passar o conteúdo à mão |
 | Programa de impressão | `SAPFM06P` | Existe, programa, pacote `ME`, não eliminado | Não alterar |
-| Formulário novo | nome ainda em aberto | `ZMM_PEDIDO_COMPRA` não está no repositório | Criar como cópia, na request `DS4K900553` |
-| Mensagem | `NEU`, aplicação `EF`, meio impressão `1` | Configuração | Apontar o formulário novo na request `DS4K900551` |
+| Interface nova | `ZAFMM_PEDIDO_COMPRA` | Nome definido em 16/11/2026. Objeto de interface, distinto do formulário | Criar em branco e passar o conteúdo à mão, na request `DS4K900553`. Criar antes do formulário |
+| Formulário novo | `ZAFMM_PEDIDO_COMPRA` | Nome definido em 16/11/2026. Objeto de formulário, distinto da interface | Criar em branco, apontar para a interface nova e passar o conteúdo à mão, na request `DS4K900553` |
+| Mensagem | `NEU`, aplicação `EF`, meio impressão `1` | Configuração | Apontar `ZAFMM_PEDIDO_COMPRA` na request `DS4K900551` |
 | Determinação | um registro por tipo, sem fornecedor | Configuração | Não usar o registro que depende do fornecedor |
 
-Pacote do GAP, pela regra de pacote: `ZPMM_MM_018_T1`, `ZPMM_MM_018_T2` e `ZPMM_MM_018_T3`. O tier sai do objeto na criação. O pacote pai não fecha: a EF não tem o campo cenário empresarial, e o processo "Compra de materiais" não escolhe o nó.
+Pacote fechado em 23/11/2026: `ZPKG_T3_MM_PURCHASE_ORDER`, pai `ZPKG_T3_MM`. A classe, a interface e o formulário estão nesse pacote.
 
 ## Validação técnica
 
@@ -69,13 +71,13 @@ Consulta no `KOMATSU_DEV_100`, tabela de repositório, em 13/11/2026:
 
 - `MEDRUCK_PO`: presente, marca de eliminação vazia.
 - `SAPFM06P`: presente, marca de eliminação vazia.
-- `ZMM_PEDIDO_COMPRA`: sem linha.
+- `ZMM_PEDIDO_COMPRA`: sem linha. Esse nome ficou para trás. O nome definido em 16/11/2026 é `ZAFMM_PEDIDO_COMPRA`, para o formulário e para a interface. Essa consulta não cobriu esse nome.
 
 A EF cita a leitura do pedido, da condição de pagamento, do incoterm e do e-mail do fornecedor. Essas leituras são do pedido já gravado. Não houve troca dessas leituras por outra fonte: a EF nomeia a origem e o resultado tem de ser o mesmo.
 
 ## Clean Core
 
-Desenvolvimento novo, mas o ponto de chamada é o programa padrão de impressão do pedido, que a EF manda manter. O formulário novo é cópia do formulário padrão. Não se altera o programa nem o formulário padrão. Não se cria tabela, serviço nem aplicativo.
+Desenvolvimento novo, mas o ponto de chamada é o programa padrão de impressão do pedido, que a EF manda manter. O formulário novo e a interface nova recebem à mão o conteúdo do padrão. Não se altera o programa, o formulário padrão nem a interface padrão. Não se cria tabela, serviço nem aplicativo.
 
 ## Regras que o formulário precisa cumprir
 
@@ -97,11 +99,10 @@ A ordem sugerida continua a do plano anterior: emissão do pedido nacional, depo
 
 ## Pendências
 
-Estas perguntas impedem criar o objeto. Cada uma cita o que a EF diz e o que ela não fecha.
+Nome fechado em 16/11/2026: formulário e interface se chamam `ZAFMM_PEDIDO_COMPRA`. São objetos de tipos diferentes, com o mesmo nome. O botão de copiar da `SFP` não entra no caminho.
 
-1. Nome do formulário. A EF, na seção "Design da Solução", propõe `ZMM_PEDIDO_COMPRA`, cópia de `MEDRUCK_PO`. O workbook, para formulário novo, usa a máscara `Z{MOD}S_{DESC}`, o que daria `ZMMS_PEDIDO_COMPRA`. Qual nome gravar?
-2. Cenário empresarial. A regra de pacote escolhe o pai por módulo e cenário empresarial. A EF traz módulo MM e o processo "Compra de materiais", e não traz o campo cenário empresarial. Qual é o cenário do catálogo?
-3. Tipos de pedido da proposta. A EF lista os tipos que propõem a mensagem e os que não propõem. Esses códigos ficam fixos ou entram em `ZCL_XX_CONSTANTES`? Se for parametrizar, qual é o nome da constante e se a leitura é lista ou par de valores?
-4. Condições do quadro de totais. A EF amarra ICMS a `BX13`, IPI a `BX23`, PIS a `IPIS`, COFINS a `ICOF`, frete a `FRA1` e `FRB1`, e exclui `PB00` e `PBXX` de outros custos. Ficam fixos ou entram em `ZCL_XX_CONSTANTES`? Se for parametrizar, qual é o nome da constante e se a leitura é lista ou par de valores?
+1. Pacote. Fechado em 23/11/2026: `ZPKG_T3_MM_PURCHASE_ORDER`, pai `ZPKG_T3_MM`. Objetos movidos de `ZPMM`.
+2. Tipos de pedido da proposta. Fechado em 23/11/2026: configuração da `NACE`, aplicação `EF`, mensagem `NEU`, condição `B026`. Não entra em `ZCL_XX_CONSTANTES`.
+3. Condições do quadro de totais. Fechado em 23/11/2026: de-para fixo na rotina `build_purchase_order`. ICMS `BX13`, IPI `BX23`, PIS `IPIS`, COFINS `ICOF`, frete `FRA1` e `FRB1`. `PB00` e `PBXX` fora de outros custos. Não entra em `ZCL_XX_CONSTANTES`.
 
 Requests já informadas: workbench `DS4K900553` e customizing `DS4K900551`.

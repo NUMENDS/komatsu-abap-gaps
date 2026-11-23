@@ -1,0 +1,191 @@
+{
+  "gap_id": "GAP018",
+  "gap_name": "Formulário de pedido de compras",
+  "request_id": "DS4K900553",
+  "sistema": "KOMATSU_DEV_100 · 100",
+  "modulo": "MM",
+  "projeto": "Komatsu Steel",
+  "executor": "Igor Coutinho Checan",
+  "data": "23/11/2026",
+  "versao": "1.0",
+  "status": "Em revisão",
+  "ef": "[MM007] EF GAP018 Formulário Pedido de Compras V1",
+  "requisitos_lista": "Impressão do pedido 4500000000; regras da classe ZMMCL_PURCHASE_ORDER_FORM",
+  "tdd_mode": "lite",
+  "objetivo_paragrafo": "Este relatório documenta a evidência de testes do GAP018 Formulário de pedido de compras (request DS4K900553), obtida em 23/11/2026 no KOMATSU_DEV_100. A classe ZMMCL_PURCHASE_ORDER_FORM foi executada por adt_run_tests e adt_run_atc. A impressão do pedido 4500000000, meio impressão, foi feita pelo usuário e gerou o PDF do formulário ZAFMM_PEDIDO_COMPRA.",
+  "escopo_validacao": "Classe ZMMCL_PURCHASE_ORDER_FORM e a impressão do pedido 4500000000 no formulário ZAFMM_PEDIDO_COMPRA.",
+  "criterio_aceite": "ABAP Unit 100% passed; ATC P1 e P2 = 0; impressão do pedido 4500000000 gerada. Os CT-02 a CT-14 da EF não foram executados neste ciclo.",
+  "unit_passed": "15",
+  "unit_failed": "0",
+  "atc_p1": "0",
+  "atc_p2": "0",
+  "atc_p3": "0",
+  "atc_p4": "0",
+  "atc_variant": "variante do customizing do sistema",
+  "atc_worklist_id": "002248379B461FE1B9E670481376D038",
+  "parecer": "Os 15 métodos de LTCL_PURCHASE_ORDER passaram e o ATC da classe não retornou finding. A impressão do pedido 4500000000 gerou o PDF Komatsu. O ciclo não cobre os CT-02 a CT-14.",
+  "bugs": "Nenhum",
+  "divergencias": "A condição de pagamento saiu só como 0004. O incoterm e a especificação do item saíram em branco nesta impressão. Os CT-02 a CT-14 não têm PDF neste relatório.",
+  "objetos": [
+    {
+      "tipo": "CLAS",
+      "objeto": "ZMMCL_PURCHASE_ORDER_FORM",
+      "tool": "adt_run_tests",
+      "resultado": "15 passed, 0 failed"
+    },
+    {
+      "tipo": "CLAS",
+      "objeto": "ZMMCL_PURCHASE_ORDER_FORM",
+      "tool": "adt_run_atc",
+      "resultado": "P1 0, P2 0, P3 0, P4 0"
+    }
+  ],
+  "unit_tests": [
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_BLANK_TAX_NUMBER",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0.01 s",
+      "evidence": "adt_run_tests: testMethod TEST_BLANK_TAX_NUMBER executionTime=0.01 unit=s. O runResult não trouxe alerta."
+    },
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_CNPJ_AND_SIGNATURE",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0 s",
+      "evidence": "adt_run_tests: testMethod TEST_CNPJ_AND_SIGNATURE executionTime=0 unit=s. O runResult não trouxe alerta."
+    },
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_DELETED_ITEM",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0 s",
+      "evidence": "adt_run_tests: testMethod TEST_DELETED_ITEM executionTime=0 unit=s. O runResult não trouxe alerta."
+    },
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_EMAIL_ON_PO_DATE",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0 s",
+      "evidence": "adt_run_tests: testMethod TEST_EMAIL_ON_PO_DATE executionTime=0 unit=s. O runResult não trouxe alerta."
+    },
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_EXCLUDED_PRICE",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0 s",
+      "evidence": "adt_run_tests: testMethod TEST_EXCLUDED_PRICE executionTime=0 unit=s. O runResult não trouxe alerta."
+    },
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_FREIGHT_VALUE_ONLY",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0 s",
+      "evidence": "adt_run_tests: testMethod TEST_FREIGHT_VALUE_ONLY executionTime=0 unit=s. O runResult não trouxe alerta."
+    },
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_HEADER_ONCE",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0 s",
+      "evidence": "adt_run_tests: testMethod TEST_HEADER_ONCE executionTime=0 unit=s. O runResult não trouxe alerta."
+    },
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_INACTIVE_TAX",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0 s",
+      "evidence": "adt_run_tests: testMethod TEST_INACTIVE_TAX executionTime=0 unit=s. O runResult não trouxe alerta."
+    },
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_NO_SCHEDULE_DATE",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0 s",
+      "evidence": "adt_run_tests: testMethod TEST_NO_SCHEDULE_DATE executionTime=0 unit=s. O runResult não trouxe alerta."
+    },
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_READ_FAILURE_KEEPS_PRINT",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0 s",
+      "evidence": "adt_run_tests: testMethod TEST_READ_FAILURE_KEEPS_PRINT executionTime=0 unit=s. O runResult não trouxe alerta."
+    },
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_STORED_DOCUMENT_VALUES",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0.01 s",
+      "evidence": "adt_run_tests: testMethod TEST_STORED_DOCUMENT_VALUES executionTime=0.01 unit=s. O runResult não trouxe alerta."
+    },
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_SUPPLIER_FIELDS",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0.05 s",
+      "evidence": "adt_run_tests: testMethod TEST_SUPPLIER_FIELDS executionTime=0.05 unit=s. O runResult não trouxe alerta."
+    },
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_TOTALS_CT09",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0 s",
+      "evidence": "adt_run_tests: testMethod TEST_TOTALS_CT09 executionTime=0 unit=s. O runResult não trouxe alerta."
+    },
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_UNIT_DISPLAY_DECIMALS",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0 s",
+      "evidence": "adt_run_tests: testMethod TEST_UNIT_DISPLAY_DECIMALS executionTime=0 unit=s. O runResult não trouxe alerta."
+    },
+    {
+      "title": "ZMMCL_PURCHASE_ORDER_FORM → LTCL_PURCHASE_ORDER → TEST_UNKNOWN_UNIT_DECIMALS",
+      "object": "ZMMCL_PURCHASE_ORDER_FORM (CLAS)",
+      "status": "Passed",
+      "duration": "0 s",
+      "evidence": "adt_run_tests: testMethod TEST_UNKNOWN_UNIT_DECIMALS executionTime=0 unit=s. O runResult não trouxe alerta."
+    }
+  ],
+  "atc_findings": [],
+  "scenarios": [
+    {
+      "id": "CT-01",
+      "title": "Impressão do pedido 4500000000",
+      "spec": "Processar a mensagem de pedido novo, meio impressão, e obter o PDF com o título SAP S/4HANA PEDIDO DE COMPRA e o número do pedido.",
+      "fonte": "usuario · fornecido",
+      "entrada": "Pedido 4500000000, data do documento 11/09/2026, um item, meio impressão.",
+      "esperado": "PDF do formulário ZAFMM_PEDIDO_COMPRA com o número 4500000000.",
+      "obtido": "PDF gerado. Título SAP S/4HANA Pedido de Compra. Pedido 4500000000. Item 00010, quantidade 100 UN, preço unitário 100,0000, valor 10.000,00, entrega 11/09/2026. Total dos itens 10.000,00. ICMS, IPI, PIS, COFINS, frete e outros custos em 0,00. Valor total 10.000,00. Moeda BRL - Real do Brasil. Condição de pagamento 0004. Incoterm em branco. Local de entrega Av. Ipiranga, 165, 01046-010, São Paulo, SP, BR. Textos de observação impressos. Solicitado por RICARDO SILVA. Aprovado por e datas de aceite em branco.",
+      "status": "Passou",
+      "evidence": "Impressão enviada pelo usuário em 23/11/2026, visualização de saída de impressão, documento 1 de 1, sistema DS4 mandante 100."
+    }
+  ],
+  "dumps": [],
+  "aderencias": [
+    {
+      "id": "CT-01",
+      "esperado": "PDF com título SAP S/4HANA PEDIDO DE COMPRA e número 4500000000",
+      "evidencia": "Impressão do pedido 4500000000",
+      "aderencia": "Sim"
+    },
+    {
+      "id": "RN-04",
+      "esperado": "Preço unitário com 4 casas e valor do item com 2 casas",
+      "evidencia": "Impressão: preço 100,0000 e valor 10.000,00",
+      "aderencia": "Sim"
+    },
+    {
+      "id": "RN-05",
+      "esperado": "Seis linhas de imposto e custo, com 0,00 quando a condição não existe",
+      "evidencia": "Impressão: ICMS, IPI, PIS, COFINS, frete e outros custos em 0,00",
+      "aderencia": "Sim"
+    },
+    {
+      "id": "RN-06",
+      "esperado": "Solicitado por preenchido; aprovado por e aceite em branco; textos da área de observações",
+      "evidencia": "Impressão: RICARDO SILVA, aprovado por em branco, datas ____/____/____, textos de observação visíveis",
+      "aderencia": "Sim"
+    }
+  ]
+}

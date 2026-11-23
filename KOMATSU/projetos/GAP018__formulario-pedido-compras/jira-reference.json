@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "gap": "GAP018",
+  "jira": {
+    "base_url": "https://b2rise.atlassian.net",
+    "epic_key": "KS-6",
+    "epic_id": "60341",
+    "project_key": "KS"
+  },
+  "plan": {
+    "source": "02_dev/plano-execucao-manual.md",
+    "fingerprint": "sha256:6E0CC6B14DE3A1A3E0ECEB97978A95BCF3CCDFE1F26E053954573C6C072F8179",
+    "approved": false
+  },
+  "last_successful_sync_at": "2026-11-23T12:14:34Z",
+  "stories": [
+    {
+      "sync_id": "confirmar-nome-pacote-parametros",
+      "issue_key": "KS-180",
+      "summary": "[GAP-018] Confirmar nome, pacote e parâmetros",
+      "plan_reference": "Antes de gravar",
+      "last_synced_hash": "sha256:03B6CD2705D8CCED6496F4D42B7036135CBA3AF01447E1B7F33FF549C13E4DEA"
+    },
+    {
+      "sync_id": "formulario-e-interface",
+      "issue_key": "KS-181",
+      "summary": "[GAP-018] Copiar o formulário de MEDRUCK_PO",
+      "plan_reference": "Interface e formulário",
+      "last_synced_hash": "sha256:8B29BAFC33E5B649A9B8AD23E5370F8912D4B0AB31EB5C459A76F371C01B7387"
+    },
+    {
+      "sync_id": "layout-pdf",
+      "issue_key": "KS-182",
+      "summary": "[GAP-018] Ajustar o layout do PDF",
+      "plan_reference": "Layout",
+      "last_synced_hash": null
+    },
+    {
+      "sync_id": "regras-formulario",
+      "issue_key": "KS-183",
+      "summary": "[GAP-018] Implementar as regras do formulário",
+      "plan_reference": "Regras na classe",
+      "last_synced_hash": "sha256:5AE569F655631BE36678A1813E9E622C4268FEC1F85CC4171FA08F8163AB399F"
+    },
+    {
+      "sync_id": "mensagem-neu",
+      "issue_key": "KS-184",
+      "summary": "[GAP-018] Configurar a mensagem NEU",
+      "plan_reference": "Apontar a mensagem",
+      "last_synced_hash": null
+    },
+    {
+      "sync_id": "testes-ct",
+      "issue_key": "KS-185",
+      "summary": "[GAP-018] Executar os testes CT-01 a CT-14",
+      "plan_reference": "Testes",
+      "last_synced_hash": "sha256:563C221E324C8D4A538892731CD6C29B2FEB750014E01A112BCBBF047C521F71"
+    }
+  ],
+  "conflicts": []
+}
