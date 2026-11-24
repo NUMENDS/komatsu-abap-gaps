@@ -132,6 +132,8 @@ o desenvolvimento:
 
 ## 3. Regras obrigatórias
 
+- Antes da aprovação explícita do plano, qualquer consulta ao Jira para apresentar opções no Factory Wizard deve ser somente leitura e limitada aos cards atribuídos ao usuário autenticado. Não criar, editar, excluir, atribuir, comentar ou alterar status/prioridade nessa fase.
+- A seleção de um card no wizard é somente uma referência indicada pelo usuário. Não equivale à aprovação do plano, não autoriza escrita no Jira e não basta para identificar um GAP ou épico sem validação.
 - Nunca presumir qual é o GAP do desenvolvimento.
 - Sempre solicitar confirmação quando houver ambiguidade.
 - Nunca criar User Stories duplicadas.
@@ -165,6 +167,8 @@ de escopo que não estejam previstas nele.
 
 Não executar a sincronização para planos
 que ainda não tenham sido aprovados.
+
+Uma consulta de leitura para preencher o seletor de cards atribuídos ao usuário no wizard pode ocorrer antes da aprovação. Essa exceção não permite nenhuma mutação no Jira; todas as criações ou atualizações continuam bloqueadas até a aprovação explícita do plano.
 
 ## 5. Responsabilidade da skill
 

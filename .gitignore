@@ -2,3 +2,7 @@
 chats.tmp.json
 EF
 __pycache__/
+node_modules/
+
+# Uploads temporários do wizard. Hoje ficam em KOMATSU/EF, já ignorada.
+.factory-wizard-staging/

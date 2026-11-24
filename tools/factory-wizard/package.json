@@ -1,0 +1,28 @@
+{
+    "name": "komatsu-factory-wizard",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "engines": {
+      "node": ">=20"
+    },
+    "scripts": {
+      "build": "tsc -p tsconfig.server.json && tsc --noEmit -p tsconfig.json && vite build"
+    },
+    "dependencies": {
+      "@modelcontextprotocol/ext-apps": "^2.1.0",
+      "@modelcontextprotocol/server": "2.0.0",
+      "react": "^19.2.0",
+      "react-dom": "^19.2.0",
+      "zod": "^4.2.0"
+    },
+    "devDependencies": {
+      "@types/node": "^22.10.0",
+      "@types/react": "^19.2.2",
+      "@types/react-dom": "^19.2.2",
+      "@vitejs/plugin-react": "^4.3.4",
+      "typescript": "^5.9.3",
+      "vite": "^6.0.0",
+      "vite-plugin-singlefile": "^2.3.0"
+    }
+  }

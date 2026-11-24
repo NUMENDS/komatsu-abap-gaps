@@ -29,6 +29,13 @@ A skill deve identificar o contexto do desenvolvimento,
 localizar o GAP correspondente, consultar o Jira e
 sincronizar as User Stories existentes.
 
+Antes da aprovação explícita do plano, a skill não deve
+criar, editar, excluir, atribuir, comentar ou alterar
+issues. Se for necessário apenas preencher o seletor do
+Factory Wizard, limite-se a uma consulta somente de leitura
+dos cards atribuídos ao usuário autenticado. Selecionar um
+card no wizard não é aprovação nem autorização para escrita.
+
 Todas as interações, perguntas, análises e respostas
 devem ser realizadas em português brasileiro.
 
@@ -67,8 +74,9 @@ A skill deve ser executada quando:
 - O usuário solicitar sincronização ao finalizar
   o projeto.
 
-A aprovação de um plano de desenvolvimento autoriza
-a sincronização das funcionalidades previstas nele.
+A aprovação explícita do plano é pré-requisito para qualquer
+sincronização com escrita, limitada às funcionalidades
+previstas nele.
 
 Não realizar alterações no Jira com base em planos
 que ainda não foram aprovados.

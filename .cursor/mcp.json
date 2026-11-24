@@ -1,0 +1,12 @@
+{
+    "mcpServers": {
+      "komatsu-factory-wizard": {
+        "command": "node",
+        "args": [
+          "${workspaceFolder}/tools/factory-wizard/dist/main.js",
+          "--workspace",
+          "${workspaceFolder}"
+        ]
+      }
+    }
+  }

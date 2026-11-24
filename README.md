@@ -1,6 +1,6 @@
 # Komatsu ABAP GAPs
 
-Repositório das skills, regras e do fluxo da factory ABAP da Komatsu. O desenvolvimento roda no mesmo chat, pelo MCP ABAP (`user-abap-mcp`), no sistema `KOMATSU_DEV_100`. A especificação funcional original fica em `KOMATSU/EF/` e não entra no git. A cópia usada pela factory fica em `00_spec/` do GAP.
+Repositório das skills, regras e do fluxo da factory ABAP da Komatsu. O desenvolvimento roda no mesmo chat, pelo MCP ABAP (`user-abap-mcp`), no sistema `KOMATSU_DEV_100`. A interface da factory é o MCP local `komatsu-factory-wizard`. A especificação funcional original fica em `KOMATSU/EF/` e não entra no git. A cópia usada pela factory fica em `00_spec/` do GAP.
 
 O fluxo abaixo é o de desenvolvimento novo. Remediação e simplificação ainda não têm skill neste repositório.
 
@@ -58,16 +58,35 @@ Autor: <nome completo>
 
 O `.docx` e o JSON saem na mesma pasta da EF. O nome do arquivo segue `KOMATSU_REL_..._EspTec_<data>_V0.docx`.
 
-### 2. Abrir o GAP na factory
+### 2. Subir o MCP local e abrir o wizard
 
-Este passo cria o acompanhamento. A EF original não é editada. A factory passa a usar a cópia em `00_spec/`.
+O `komatsu-factory-wizard` está em `.cursor/mcp.json`. O Cursor sobe este processo e precisa ser o dono dele:
 
 ```text
-factory orchestrator
-EF: KOMATSU/EF/<arquivo>.docx
+node ${workspaceFolder}/tools/factory-wizard/dist/main.js --workspace ${workspaceFolder}
 ```
 
-O que conferir depois:
+Na primeira vez, e depois de alterar `tools/factory-wizard`, gere o `dist` nessa pasta:
+
+```bash
+npm run build
+```
+
+Reinicie o servidor pelo painel de MCP do Cursor. Um `node` iniciado no terminal não fica ligado à interface.
+
+Com o MCP no ar, abra a tela de seleção:
+
+```text
+/gap-init
+```
+
+A primeira tela oferece **Novo GAP** e **Continuar GAP**. O comando não escolhe um GAP pelo chat, pelo `chats.tmp.json` nem pelo Jira. Antes de abrir, ele só lista, em leitura, os épicos atribuídos ao usuário autenticado (`assignee = currentUser()`). Escolher um épico guarda uma referência. Não identifica o GAP, não aprova o plano e não grava no Jira.
+
+**Novo GAP.** Envie a especificação funcional. A especificação técnica e os anexos são opcionais. O envio não aprova o plano. O acompanhamento só nasce quando esse intake for processado: a EF original não é editada, e a factory passa a usar a cópia em `00_spec/`.
+
+**Continuar GAP.** Escolha o GAP na lista. Etapa, perguntas e plano desse GAP entram só depois da escolha.
+
+O que conferir depois que o intake de um GAP novo for processado:
 
 - pasta `KOMATSU/projetos/<GAP-ID>__<slug>/`, com `gap.json` e as pastas `00_spec` até `06_doc`;
 - estágio 0, Intake, concluído;
@@ -95,7 +114,7 @@ A skill só recomenda. Pacote novo continua a ser criado fora dela, por quem tem
 
 ### 5. Responder e aprovar o plano
 
-A aprovação precisa ser explícita. "Pode seguir" no meio de outra tarefa não conta. Enquanto não houver essa frase, o Jira não é sincronizado e o Dev não começa.
+A aprovação precisa ser explícita, pelo botão do wizard ou pela frase abaixo. "Pode seguir" no meio de outra tarefa não conta. Enquanto não houver essa aprovação, o Jira não é sincronizado com escrita e o Dev não começa. Antes dela, o wizard só consulta em leitura os épicos atribuídos ao usuário autenticado. Escolher um épico não aprova o plano.
 
 ```text
 Respostas:
